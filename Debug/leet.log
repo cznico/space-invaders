@@ -1,24 +1,2 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.Cpp.Common.props(144,5): warning MSB4211: The property "WindowsTargetPlatformVersion" is being set to a value for the first time, but it was already consumed at "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.Cpp.WindowsSDK.props (29,5)".
-  main.cpp
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(55): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(56): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(57): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(64): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(65): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(68): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(75): warning C4018: '<': signed/unsigned mismatch
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\petrh\downloads\warhorse\space invaders\main.cpp(75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  leetlib.cpp
-c:\users\petrh\downloads\warhorse\space invaders\lib\dx\include\strsafe.h(5595): warning C4996: '_vsnprintf': This function or variable may be unsafe. Consider using _vsnprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1396): note: see declaration of '_vsnprintf'
-c:\users\petrh\downloads\warhorse\space invaders\lib\dx\include\strsafe.h(5635): warning C4996: '_vsnwprintf': This function or variable may be unsafe. Consider using _vsnwprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(1120): note: see declaration of '_vsnwprintf'
-c:\users\petrh\downloads\warhorse\space invaders\lib\dx\include\strsafe.h(5719): warning C4996: '_vsnprintf': This function or variable may be unsafe. Consider using _vsnprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1396): note: see declaration of '_vsnprintf'
-c:\users\petrh\downloads\warhorse\space invaders\lib\dx\include\strsafe.h(5871): warning C4996: '_vsnwprintf': This function or variable may be unsafe. Consider using _vsnwprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(1120): note: see declaration of '_vsnwprintf'
-  Generating Code...
+﻿  main.cpp
+  leet.vcxproj -> c:\Users\petrh\Downloads\Warhorse\space invaders\Debug\leet.exe

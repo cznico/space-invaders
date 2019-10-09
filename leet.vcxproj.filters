@@ -8,18 +8,57 @@
     <Filter Include="library">
       <UniqueIdentifier>{80b6e803-971a-41f1-9edb-50c9405a240c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{8c2a3ee6-c079-481e-a188-dba60225784a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="lib\leetlib.cpp">
+      <Filter>library</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Game.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Point.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Ship.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Bullet.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SpaceObject.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\leetlib.cpp">
-      <Filter>library</Filter>
+    <ClCompile Include="Invader.cpp">
+      <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\leetlib.h">
       <Filter>library</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Game.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Point.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Ship.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Bullet.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SpaceObject.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="Invader.h">
+      <Filter>source</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

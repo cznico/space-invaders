@@ -90,11 +90,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Invader.cpp" />
+    <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="lib\leetlib.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="source\Point.cpp" />
+    <ClCompile Include="source\Ship.cpp" />
+    <ClCompile Include="source\Bullet.cpp" />
+    <ClCompile Include="source\SpaceObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Invader.h" />
+    <ClInclude Include="source\Game.h" />
     <ClInclude Include="lib\leetlib.h" />
+    <ClInclude Include="source\Point.h" />
+    <ClInclude Include="source\Ship.h" />
+    <ClInclude Include="source\Bullet.h" />
+    <ClInclude Include="source\SpaceObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
