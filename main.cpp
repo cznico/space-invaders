@@ -61,8 +61,8 @@ end:
 	DrawSprite(U, UX+=IsKeyDown(VK_LEFT)?-7:IsKeyDown(VK_RIGHT)?7:0, UY, 50, 50, 3.141592+sin(time*0.1)*0.1, 0xffffffff);
 
 	// FIRE
-	static b=0;
-	static count=0;
+	static int b=0;
+	static int count=0;
 	if(count) --count;
 	if(!IsKeyDown(VK_SPACE)) count=0;
 	if(IsKeyDown(VK_SPACE) && count==0) {bullets[b].BX=UX; bullets[b].BY=UY; b=(b+1)%10; count=15;}
