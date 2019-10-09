@@ -13,9 +13,9 @@ bool Game::IsShipHit()
 {
 	for (auto invader : enemies)
 	{
-		invader.IsColliding(&ship);
+		if (invader.IsColliding(&ship)) return true;
 	}
-	return true;
+	return false;
 }
 
 void Game::Initialize(SpriteSet spriteSet)
@@ -23,13 +23,16 @@ void Game::Initialize(SpriteSet spriteSet)
 	for (int n = 0; n < 50; ++n)
 	{
 		enemies[n].startPosition.x = (n % 10) * 60 + 120;
+		enemies[n].x = enemies[n].startPosition.x;
 		enemies[n].startPosition.y = (n / 10) * 60 + 70;
-		enemies[n].SetCollisionRadius(5);
+		enemies[n].y = enemies[n].startPosition.y;
+		enemies[n].SetCollisionRadius(20);
 	}
 
 	ship = Ship();
 	ship.x = 400;
 	ship.y = 550;
+	ship.SetCollisionRadius(40);
 
 	sprites = spriteSet;
 	time = 0;
@@ -71,10 +74,10 @@ void Game::AnimateEnemies()
 		if (((n1 >> 6) & 0x7) == 0x7)yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
 		if (((n2 >> 8) & 0xf) == 0xf)yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI))*(150 + ((n*n) % 9));
 
-		auto enemy = enemies[n];
-		enemy.x = enemy.startPosition.x + xo;
-		enemy.y = enemy.startPosition.y + yo;
-		DrawSprite(sprites.enemy, enemy.x, enemy.y, (10 + ((n) % 17)), (10 + ((n) % 17)), 0, 0xffffffff);
+		Invader * enemy = &enemies[n];
+		enemy->x = enemy->startPosition.x + xo;
+		enemy->y = enemy->startPosition.y + yo;
+		DrawSprite(sprites.enemy, enemy->x, enemy->y, (10 + ((n) % 17)), (10 + ((n) % 17)), 0, 0xffffffff);
 	}
 }
 
