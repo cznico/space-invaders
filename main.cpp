@@ -1,21 +1,73 @@
 #include "lib/leetlib.h"
 #include <math.h>
 
+
 int x[50];
 int y[50];
 int time=0;
 
-struct bullet
+struct Bullet
 {
-	float BX,BY,BA;
-	bullet() {BX=BY=BA=0;}
+	float BX, BY, BA;
+	Bullet() { BX=BY=BA=0; }
 };
 
-bullet bullets[10];
+struct Ship
+{
+	float x;
+	float y;
+};
+
+Bullet bullets[10];
+
+void AnimateHeadline(void * textSprites[]) {
+	for (int n = 0; n < strlen("space invaders"); ++n)
+	{
+		if (n != 5)DrawSprite(textSprites[n], n * 40 + 150, 30, 20, 20, sin(time*0.1)*n*0.01);
+	}
+}
+
+void AnimateEnemies(void * enemySprite)
+{
+	for (int n = 0; n<50; ++n)
+	{
+		int xo = 0, yo = 0;
+		int n1 = time + n * n + n * n*n;
+		int n2 = time + n + n * n + n * n*n * 3;
+		if (((n1 >> 6) & 0x7) == 0x7)xo += (1 - cos((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
+		if (((n1 >> 6) & 0x7) == 0x7)yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
+		if (((n2 >> 8) & 0xf) == 0xf)yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI))*(150 + ((n*n) % 9));
+		DrawSprite(enemySprite, x[n] + xo, y[n] + yo, (10 + ((n) % 17)), (10 + ((n) % 17)), 0, 0xffffffff);
+	}
+}
+
+void AnimateShip(void * shipSprites, Ship * ship)
+{
+	ship->x += IsKeyDown(VK_LEFT) ? -7 : IsKeyDown(VK_RIGHT) ? 7 : 0;
+
+	ship->x = fmax(ship->x, 0);
+	ship->x = fmin(ship->x, 800);
+
+	DrawSprite(shipSprites, ship->x, ship->y, 50, 50, 3.141592 + sin(time*0.1)*0.1, 0xffffffff);
+}
+
+void AnimateFiring(void * bulletTexture, Ship * ship)
+{
+	static int b = 0;
+	static int count = 0;
+	if (count) --count;
+	if (!IsKeyDown(VK_SPACE)) count = 0;
+	if (IsKeyDown(VK_SPACE) && count == 0) { bullets[b].BX = ship->x; bullets[b].BY = ship->y; b = (b + 1) % 10; count = 15; }
+
+	for (int n = 0; n<10; ++n)
+	{
+		DrawSprite(bulletTexture, bullets[n].BX, bullets[n].BY -= 4, 10, 10, bullets[n].BA += 0.1f, 0xffffffff);
+	}
+}
 
 void Game()
 {
-	void *Text[]=
+	void *headlineTextures[] =
 	{
 		LoadSprite("gfx/slet.png"),
 		LoadSprite("gfx/plet.png"),
@@ -34,10 +86,13 @@ void Game()
 	};
 
 	// SETUP
-	int UX=400, UY=550;
-	void *Enemy = LoadSprite("gfx/Little Invader.png");
-	void *U = LoadSprite("gfx/Big Invader.png");
-	void *bull = LoadSprite("gfx/bullet.png");
+	Ship ship = Ship();
+	ship.x = 400;
+	ship.y = 550;
+
+	void * enemyTexture = LoadSprite("gfx/Little Invader.png");
+	void * shipTexture = LoadSprite("gfx/Big Invader.png");
+	void * bulletTexture = LoadSprite("gfx/bullet.png");
 	for(int n=0;n<50;++n)
 	{
 		x[n]=(n%10)*60+120;
@@ -47,32 +102,11 @@ end:
 	++time;
 	if(WantQuit()) return;
 	if(IsKeyDown(VK_ESCAPE)) return;
-	for(int n=0;n<50;++n)
-	{
-		int xo=0,yo=0;
-		int n1=time+n*n+n*n*n;
-		int n2=time+n+n*n+n*n*n*3;
-		if(((n1>>6)&0x7)==0x7)xo+=(1-cos((n1&0x7f)/64.0f*2.f*3.141592))*(20+((n*n)%9));
-		if(((n1>>6)&0x7)==0x7)yo+=(sin((n1&0x7f)/64.0f*2.f*3.141592))*(20+((n*n)%9));
-		if(((n2>>8)&0xf)==0xf)yo+=(1-cos((n2&0xff)/256.0f*2.f*3.141592))*(150+((n*n)%9));
-		DrawSprite(Enemy, x[n]+xo, y[n]+yo, (10+((n)%17)), (10+((n)%17)), 0, 0xffffffff);
-	}
 	
-	DrawSprite(U, UX+=IsKeyDown(VK_LEFT)?-7:IsKeyDown(VK_RIGHT)?7:0, UY, 50, 50, 3.141592+sin(time*0.1)*0.1, 0xffffffff);
-
-	// FIRE
-	static int b=0;
-	static int count=0;
-	if(count) --count;
-	if(!IsKeyDown(VK_SPACE)) count=0;
-	if(IsKeyDown(VK_SPACE) && count==0) {bullets[b].BX=UX; bullets[b].BY=UY; b=(b+1)%10; count=15;}
-
-	for(int n=0;n<10;++n)
-	{
-		DrawSprite(bull, bullets[n].BX, bullets[n].BY-=4, 10, 10, bullets[n].BA+=0.1f, 0xffffffff);
-	}
-
-	for(int n=0;n<strlen("space invaders");++n) if(n!=5)DrawSprite(Text[n], n*40+150,30,20,20,sin(time*0.1)*n*0.01);
+	AnimateEnemies(enemyTexture);
+	AnimateShip(shipTexture, &ship);	
+	AnimateFiring(bulletTexture, &ship);
+	AnimateHeadline(headlineTextures);
 
 	Flip();
     
