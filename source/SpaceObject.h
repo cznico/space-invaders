@@ -9,8 +9,7 @@ namespace SpaceInvaders
 		float collisionRadius = 0;
 
 	public:
-		SpaceObject();
-		~SpaceObject();
+		bool enabled = true;
 	
 		void SetCollisionRadius(float newRadius) { collisionRadius = newRadius; };
 		bool IsColliding(const SpaceObject * another) const;

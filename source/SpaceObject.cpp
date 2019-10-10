@@ -3,17 +3,10 @@
 
 using namespace SpaceInvaders;
 
-SpaceObject::SpaceObject()
-{
-}
-
-
-SpaceObject::~SpaceObject()
-{
-}
-
 bool SpaceObject::IsColliding(const SpaceObject * another) const
 {
+	if (!enabled || !another->enabled) return false;
+
 	float offsetX = another->x - x;
 	float offsetY = another->y - y;
 

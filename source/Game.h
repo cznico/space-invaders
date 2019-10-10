@@ -27,20 +27,22 @@ namespace SpaceInvaders {
 			Ship ship;
 
 			int time = 0;
+			int score = 0;
+			int lives = 3;
 
 			SpriteSet sprites;
 
-			bool IsShipHit();
+			void ResolveEnemyHits();
+			void ResolvePlayerHit();
 
 			void AnimateEnemies();
 			void AnimateShip();
 			void AnimateFiring();
 			void AnimateHeadline();
 			void AnimateScore();
+			void AnimateLives();
 
 		public:
-			Game();
-
 			void Animate();
 			void ResolveInteractions();
 			void Initialize(const SpriteSet spriteSet);

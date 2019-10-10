@@ -1,23 +1,11 @@
 #include "Game.h"
 
 #include <math.h>
+#include <iostream>
 #include "../lib/leetlib.h" // TODO remove dep
 
 using namespace std;
 using namespace SpaceInvaders;
-
-Game::Game()
-{
-}
-
-bool Game::IsShipHit()
-{
-	for (auto invader : enemies)
-	{
-		if (invader.IsColliding(&ship)) return true;
-	}
-	return false;
-}
 
 void Game::Initialize(SpriteSet spriteSet)
 {
@@ -39,11 +27,38 @@ void Game::Initialize(SpriteSet spriteSet)
 	time = 0;
 }
 
-void Game::ResolveInteractions()
+void Game::ResolvePlayerHit()
 {
-	if (IsShipHit()) {
+	for (Invader &invader : enemies)
+	{
+		if (invader.IsColliding(&ship))
+		{
+			invader.enabled = false;
+			lives--;
+		}
+	}
+}
+
+
+void Game::ResolveEnemyHits()
+{
+	for (Invader &invader : enemies)
+	{
+		for (Bullet &bullet : bullets) {
+			if (invader.IsColliding(&bullet)) {
+				bullet.enabled = false;
+				invader.enabled = false;
+				score++;
+			};
+		}
 
 	}
+}
+
+void Game::ResolveInteractions()
+{
+	ResolvePlayerHit();
+	ResolveEnemyHits();
 }
 
 void Game::Animate()
@@ -54,6 +69,7 @@ void Game::Animate()
 	AnimateFiring();
 	AnimateHeadline();
 	AnimateScore();
+	AnimateLives();
 }
 
 void Game::AnimateHeadline() {
@@ -70,8 +86,20 @@ void Game::AnimateHeadline() {
 
 void Game::AnimateScore() {
 	int posIndex = 0;
-	string text = std::to_string(time);
+	string text = std::to_string(score);
 	int textOffset[] = { 20, 560 };
+
+	for (char &ch : text) {
+		auto sprite = sprites.font.find(ch);
+		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * 40 + textOffset[0], textOffset[1], 20, 20, sin(time * 0.1) * posIndex * 0.01);
+		posIndex++;
+	}
+}
+
+void Game::AnimateLives() {
+	int posIndex = 0;
+	string text = std::to_string(lives);
+	int textOffset[] = { 780, 560 };
 
 	for (char &ch : text) {
 		auto sprite = sprites.font.find(ch);
@@ -94,7 +122,11 @@ void Game::AnimateEnemies()
 		Invader * enemy = &enemies[n];
 		enemy->x = enemy->startPosition.x + xo;
 		enemy->y = enemy->startPosition.y + yo;
-		DrawSprite(sprites.enemy, enemy->x, enemy->y, (10 + ((n) % 17)), (10 + ((n) % 17)), 0, 0xffffffff);
+
+		if (enemy->enabled)
+		{
+			DrawSprite(sprites.enemy, enemy->x, enemy->y, (10 + ((n) % 17)), (10 + ((n) % 17)), 0, 0xffffffff);
+		}		
 	}
 }
 
@@ -115,12 +147,16 @@ void Game::AnimateFiring()
 	{
 		bullets[b].x = ship.x;
 		bullets[b].y = ship.y;
+		bullets[b].enabled = true;
 		b = (b + 1) % 10;
 		count = 15;
 	}
 
 	for (int n = 0; n<10; ++n)
 	{
-		DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y -= 4, 10, 10, bullets[n].rotation += 0.1f, 0xffffffff);
+		if (bullets[n].enabled)
+		{
+			DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y -= 4, 10, 10, bullets[n].rotation += 0.1f, 0xffffffff);
+		}		
 	}
 }
