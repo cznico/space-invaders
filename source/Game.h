@@ -35,12 +35,11 @@ namespace SpaceInvaders {
 			void ResolveEnemyHits();
 			void ResolvePlayerHit();
 
+			void AnimateString(string text, int x, int y);
+
 			void AnimateEnemies();
 			void AnimateShip();
 			void AnimateFiring();
-			void AnimateHeadline();
-			void AnimateScore();
-			void AnimateLives();
 
 		public:
 			void Animate();

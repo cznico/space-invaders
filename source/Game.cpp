@@ -67,43 +67,18 @@ void Game::Animate()
 	AnimateEnemies();
 	AnimateShip();
 	AnimateFiring();
-	AnimateHeadline();
-	AnimateScore();
-	AnimateLives();
+
+	AnimateString("space invaders", 150, 30);
+	AnimateString(std::to_string(score), 20, 560);
+	AnimateString(std::to_string(lives), 780, 560);
 }
 
-void Game::AnimateHeadline() {
+void Game::AnimateString(string text, int x, int y)
+{
 	int posIndex = 0;
-	string text = "space invaders";
-	int textOffset[] = { 150, 30 };	
-
 	for (char &ch : text) {
 		auto sprite = sprites.font.find(ch);
-		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * 40 + textOffset[0], textOffset[1], 20, 20, sin(time * 0.1) * posIndex * 0.01);
-		posIndex++;
-	}
-}
-
-void Game::AnimateScore() {
-	int posIndex = 0;
-	string text = std::to_string(score);
-	int textOffset[] = { 20, 560 };
-
-	for (char &ch : text) {
-		auto sprite = sprites.font.find(ch);
-		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * 40 + textOffset[0], textOffset[1], 20, 20, sin(time * 0.1) * posIndex * 0.01);
-		posIndex++;
-	}
-}
-
-void Game::AnimateLives() {
-	int posIndex = 0;
-	string text = std::to_string(lives);
-	int textOffset[] = { 780, 560 };
-
-	for (char &ch : text) {
-		auto sprite = sprites.font.find(ch);
-		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * 40 + textOffset[0], textOffset[1], 20, 20, sin(time * 0.1) * posIndex * 0.01);
+		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * 40 + x, y, 20, 20, sin(time * 0.1) * posIndex * 0.01);
 		posIndex++;
 	}
 }
