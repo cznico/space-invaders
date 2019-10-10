@@ -3,6 +3,7 @@
 #include <windows.h>
 
 typedef unsigned long       DWORD;
+struct IDirect3DTexture9;
 
 #define PI ((float)3.1415926535)
 
@@ -22,8 +23,8 @@ bool IsKeyDown(int key); // use windows VK_ codes for special keys, eg VK_LEFT; 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // output
 // 'sprite output' 
-void *LoadSprite(const char *fname);
-void DrawSprite(void *sprite, float xcentre, float ycentre, float xsize, float ysize, float rotate_angle_radians=0, DWORD tint_col_argb = 0xffffffff);
+IDirect3DTexture9 *LoadSprite(const char *fname);
+void DrawSprite(IDirect3DTexture9 *sprite, float xcentre, float ycentre, float xsize, float ysize, float rotate_angle_radians=0, DWORD tint_col_argb = 0xffffffff);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // sound

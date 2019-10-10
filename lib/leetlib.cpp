@@ -738,7 +738,7 @@ bool IsKeyDown(int key) // use windows VK_ codes for special keys, eg VK_LEFT; u
 */
 
 // 'sprite output' 
-void *LoadSprite(const char *fname)
+IDirect3DTexture9 *LoadSprite(const char *fname)
 {
 	IDirect3DTexture9 *tex = NULL;
 	D3DXCreateTextureFromFile(g_pd3dDevice,fname,&tex);
@@ -765,7 +765,7 @@ void DrawRectangle(float x1, float y1, float x2, float y2, DWORD col )
 
 }
 */
-void DrawSprite(void *sprite, float xcentre, float ycentre, float xsize, float ysize, float angle, DWORD col )
+void DrawSprite(IDirect3DTexture9 *sprite, float xcentre, float ycentre, float xsize, float ysize, float angle, DWORD col )
 {
 	SetCurrentTexture(sprite);
 	float c=cosf(angle);

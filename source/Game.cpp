@@ -3,6 +3,7 @@
 #include <math.h>
 #include "../lib/leetlib.h" // TODO remove dep
 
+using namespace std;
 using namespace SpaceInvaders;
 
 Game::Game()
@@ -52,13 +53,29 @@ void Game::Animate()
 	AnimateShip();
 	AnimateFiring();
 	AnimateHeadline();
+	AnimateScore();
 }
 
 void Game::AnimateHeadline() {
 	int posIndex = 0;
-	for (auto ch : "space invaders") {
-		auto sprite = sprites.text.find(ch);
-		if (sprite != sprites.text.end()) DrawSprite(sprite->second, posIndex * 40 + 150, 30, 20, 20, sin(time * 0.1) * posIndex * 0.01);
+	string text = "space invaders";
+	int textOffset[] = { 150, 30 };	
+
+	for (char &ch : text) {
+		auto sprite = sprites.font.find(ch);
+		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * 40 + textOffset[0], textOffset[1], 20, 20, sin(time * 0.1) * posIndex * 0.01);
+		posIndex++;
+	}
+}
+
+void Game::AnimateScore() {
+	int posIndex = 0;
+	string text = std::to_string(time);
+	int textOffset[] = { 20, 560 };
+
+	for (char &ch : text) {
+		auto sprite = sprites.font.find(ch);
+		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * 40 + textOffset[0], textOffset[1], 20, 20, sin(time * 0.1) * posIndex * 0.01);
 		posIndex++;
 	}
 }
@@ -104,6 +121,6 @@ void Game::AnimateFiring()
 
 	for (int n = 0; n<10; ++n)
 	{
-		DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y -= 4, 10, 10, bullets[n].rotation += 0.f, 0xffffffff);
+		DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y -= 4, 10, 10, bullets[n].rotation += 0.1f, 0xffffffff);
 	}
 }

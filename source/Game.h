@@ -3,6 +3,8 @@
 #include "Bullet.h"
 #include "Ship.h"
 
+#include <d3d9.h>
+
 #include <map>
 #include <string>
 
@@ -10,10 +12,10 @@ using namespace std;
 
 namespace SpaceInvaders {
 	struct SpriteSet {
-		void * enemy;
-		void * ship;
-		void * bullet;
-		map<char, void *> text;
+		IDirect3DTexture9 * enemy;
+		IDirect3DTexture9 * ship;
+		IDirect3DTexture9 * bullet;
+		map<char, IDirect3DTexture9 *> font;
 	};
 
 
@@ -34,6 +36,7 @@ namespace SpaceInvaders {
 			void AnimateShip();
 			void AnimateFiring();
 			void AnimateHeadline();
+			void AnimateScore();
 
 		public:
 			Game();

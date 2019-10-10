@@ -34,7 +34,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Invader.cpp">
+    <ClCompile Include="source\Invader.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -57,8 +57,6 @@
     <ClInclude Include="source\SpaceObject.h">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="Invader.h">
-      <Filter>source</Filter>
-    </ClInclude>
+    <ClInclude Include="source\Invader.h" />
   </ItemGroup>
 </Project>
