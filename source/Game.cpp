@@ -87,19 +87,20 @@ void Game::AnimateEnemies()
 {
 	for (int n = 0; n<50; ++n)
 	{
-		int xo = 0, yo = 0;
-		int n1 = time + n * n + n * n*n;
-		int n2 = time + n + n * n + n * n*n * 3;
-		if (((n1 >> 6) & 0x7) == 0x7)xo += (1 - cos((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
-		if (((n1 >> 6) & 0x7) == 0x7)yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
-		if (((n2 >> 8) & 0xf) == 0xf)yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI))*(150 + ((n*n) % 9));
-
-		Invader * enemy = &enemies[n];
-		enemy->x = enemy->startPosition.x + xo;
-		enemy->y = enemy->startPosition.y + yo;
+		Invader * enemy = &enemies[n];		
 
 		if (enemy->enabled)
 		{
+			int xo = 0, yo = 0;
+			int n1 = time + n * n + n * n*n;
+			int n2 = time + n + n * n + n * n*n * 3;
+			if (((n1 >> 6) & 0x7) == 0x7)xo += (1 - cos((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
+			if (((n1 >> 6) & 0x7) == 0x7)yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
+			if (((n2 >> 8) & 0xf) == 0xf)yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI))*(150 + ((n*n) % 9));
+
+			enemy->x = enemy->startPosition.x + xo;
+			enemy->y = enemy->startPosition.y + yo;
+
 			DrawSprite(sprites.enemy, enemy->x, enemy->y, (10 + ((n) % 17)), (10 + ((n) % 17)), 0, 0xffffffff);
 		}		
 	}
