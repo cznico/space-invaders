@@ -48,7 +48,7 @@ void Game::ResolveEnemyHits()
 			if (invader.IsColliding(&bullet)) {
 				bullet.enabled = false;
 				invader.enabled = false;
-				score++;
+				score += 10 + (level - 1) * 2; // Every level increases score points by 20%
 			};
 		}
 
@@ -86,7 +86,6 @@ void Game::ResolveGameState()
 		{
 			// TODO check if made to high scores
 			state = GameState::DEAD;
-
 			return;
 		}
 		
@@ -98,7 +97,6 @@ void Game::ResolveGameState()
 		if (aliveEnemies == 0)
 		{
 			state = GameState::LEVEL_FINISHED;
-
 			return;
 		}
 
@@ -113,6 +111,7 @@ void Game::Animate(double timeDiff)
 
 	AnimateString("space invaders", maxX / 2, 30, TextAlignment::CENTER);
 	AnimateString(std::to_string(score), 20, maxY - 20);
+	AnimateString(std::to_string(level), maxX - 20, 20);
 	AnimateString(std::to_string(lives), maxX - 20, maxY - 20, TextAlignment::RIGHT);
 }
 
@@ -149,7 +148,7 @@ void Game::AnimateString(string text, int x, int y, TextAlignment alignment)
 
 void Game::AnimateEnemies()
 {
-	int phase = elapsedTime * 100;
+	int phase = elapsedTime * (100 + (level - 1) * 10); // Every level increases enemy speed by 10%
 	for (int n = 0; n<50; ++n)
 	{
 		Invader * enemy = &enemies[n];
@@ -224,7 +223,11 @@ void Game::Tick(double elapsedMicroseconds)
 		break;
 	case GameState::DEAD:
 		AnimateString("you are dead", maxX / 2, maxY / 2, TextAlignment::CENTER);
-		if (IsKeyDown(VK_ACCEPT)) ResetGame();
+
+		string scoredText = "you scored ";
+		scoredText = scoredText + to_string(score);
+		AnimateString(scoredText, maxX / 2, maxY / 2 + 50, TextAlignment::CENTER);
+		if (IsKeyDown(VK_RETURN)) ResetGame();
 		break;
 	}
 }
