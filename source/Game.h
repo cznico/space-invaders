@@ -53,6 +53,8 @@ namespace SpaceInvaders {
 
 			double startTime = 0;
 			double elapsedTime = 0;
+			double gameTime = 0;
+
 			int score = 0;
 			int lives = 3;
 			int level = 1;
@@ -69,6 +71,7 @@ namespace SpaceInvaders {
 			void AnimateShip(double timeDiff);
 			void AnimateFiring(double timeDiff);
 
+			void AnimatePausedOverlay();
 			void AnimatePrepareOverlay();
 			void AnimateGameScreen(double timeDiff);
 			void AnimateDeadScreen();
@@ -85,7 +88,7 @@ namespace SpaceInvaders {
 		public:
 			Game(int screenWidth, int screenHeight, double startTime) : maxX(screenWidth), maxY(screenHeight), startTime(startTime) {};
 
-			void Tick(double elapsedMicroseconds);
+			void Tick(double elapsedSeconds);
 			void Initialize(const SpriteSet spriteSet);
 	};
 }

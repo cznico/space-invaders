@@ -69,8 +69,14 @@ void Game::SetupLevel(int newLevel)
 	level = newLevel;
 	ResetTime();
 
-	for (auto &e : enemies) {
+	for (auto &e : enemies)
+	{
 		e.enabled = true;
+	}
+
+	for (auto &b : bullets)
+	{
+		b.enabled = false;
 	}
 }
 
@@ -102,6 +108,11 @@ void Game::ResolveGameState()
 			return;
 		}
 
+		if (IsKeyDown('P')) {
+			state = GameState::PAUSED;
+			return;
+		}
+
 	}
 
 	if (state == GameState::IN_GAME_PREPARE && elapsedTime > 3)
@@ -114,6 +125,12 @@ void Game::ResolveGameState()
 	{
 		ResetGame();
 		state = GameState::IN_GAME_PREPARE;
+		return;
+	}
+
+	if (state == GameState::PAUSED && IsKeyDown('P'))
+	{
+		state = GameState::IN_GAME;
 		return;
 	}
 
@@ -141,6 +158,17 @@ void Game::AnimatePrepareOverlay()
 	prepareTextOptions.scale = 1.2;
 
 	AnimateString("get ready", prepareTextOptions);
+}
+
+void Game::AnimatePausedOverlay()
+{
+	TextOptions pauseTextOptions;
+	pauseTextOptions.x = maxX / 2;
+	pauseTextOptions.y = maxY / 2;
+	pauseTextOptions.alignment = TextAlignment::CENTER;
+	pauseTextOptions.scale = 1.2;
+
+	AnimateString("pause", pauseTextOptions);
 }
 
 void Game::AnimateGameScreen(double timeDiff)
@@ -237,7 +265,7 @@ void Game::AnimateString(string text, const TextOptions &options) const
 
 void Game::AnimateEnemies()
 {
-	int phase = elapsedTime * (100 + (level - 1) * 10); // Every level increases enemy speed by 10%
+	int phase = gameTime * (100 + (level - 1) * 10); // Every level increases enemy speed by 10%
 
 	for (int n = 0; n<50; ++n)
 	{
@@ -272,7 +300,7 @@ void Game::AnimateShip(double timeDiff)
 	int speed = timeDiff * 700;
 	ship.MoveHorizontally(IsKeyDown(VK_LEFT) ? -speed : IsKeyDown(VK_RIGHT) ? speed : 0);
 
-	DrawSprite(sprites.ship, ship.x, ship.y, 50, 50, 3.141592 + sin(elapsedTime * 10)*0.1, 0xffffffff);
+	DrawSprite(sprites.ship, ship.x, ship.y, 50, 50, 3.141592 + sin(elapsedTime * 10) * 0.1, 0xffffffff);
 }
 
 void Game::AnimateFiring(double timeDiff)
@@ -305,12 +333,12 @@ void Game::AnimateFiring(double timeDiff)
 void Game::ResetTime()
 {
 	startTime += elapsedTime;
-	elapsedTime = 0;
+	gameTime = 0;
 }
 
-void Game::Tick(double elapsedMicroseconds)
+void Game::Tick(double elapsedSeconds)
 {
-	double newElapsedTime = elapsedMicroseconds - startTime;
+	double newElapsedTime = elapsedSeconds - startTime;
 	double timeDiff = newElapsedTime - elapsedTime;
 	elapsedTime = newElapsedTime;
 
@@ -318,11 +346,16 @@ void Game::Tick(double elapsedMicroseconds)
 
 	switch (state)
 	{
+	case GameState::PAUSED:
+		AnimateGameScreen(0);
+		AnimatePausedOverlay();
+		break;
 	case GameState::IN_GAME_PREPARE:
 		AnimateGameScreen(timeDiff);
 		AnimatePrepareOverlay();
 		break;
 	case GameState::IN_GAME:
+		gameTime += timeDiff;
 		AnimateGameScreen(timeDiff);
 		break;
 	case GameState::LEVEL_FINISHED:
