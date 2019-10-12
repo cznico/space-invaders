@@ -26,7 +26,7 @@ namespace SpaceInvaders {
 			Bullet bullets[10];
 			Ship ship;
 
-			int time = 0;
+			double elapsedTime = 0;
 			int score = 0;
 			int lives = 3;
 
@@ -38,12 +38,15 @@ namespace SpaceInvaders {
 			void AnimateString(string text, int x, int y);
 
 			void AnimateEnemies();
-			void AnimateShip();
-			void AnimateFiring();
+			void AnimateShip(double timeDiff);
+			void AnimateFiring(double timeDiff);
+
+			void Animate(double timeDiff);
+			void ResolveInteractions();
 
 		public:
-			void Animate();
-			void ResolveInteractions();
+			void Tick(double elapsedMicroseconds);
+
 			void Initialize(const SpriteSet spriteSet);
 	};
 }

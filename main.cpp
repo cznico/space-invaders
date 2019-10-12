@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string>
+#include <chrono>
 
 #include "source/Game.h"
 #include "source/Ship.h"
@@ -10,6 +11,10 @@
 
 using namespace std;
 using namespace SpaceInvaders;
+
+double microtime() {
+	return (double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) / double(1000000));
+}
 
 void Game()
 {
@@ -34,11 +39,15 @@ void Game()
 		sprites.font.emplace(i, LoadSprite(fileName.c_str()));
 	}
 
+	auto startTime = microtime();
+
 	game.Initialize(sprites);
+
 	while (!WantQuit() && !IsKeyDown(VK_ESCAPE))
 	{
-		game.Animate();
-		game.ResolveInteractions();
+		auto time = (microtime()) - startTime;
+
+		game.Tick(time);
 
 		Flip();
 	}
