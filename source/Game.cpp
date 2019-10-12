@@ -130,7 +130,7 @@ void Game::AnimateString(string text, int x, int y, TextAlignment alignment)
 
 	switch (alignment) {
 	case TextAlignment::CENTER:
-		alignmentOffset -= textSize / 2;
+		alignmentOffset -= textSize / 2 - letterSpacing / 2;
 		break;
 	case TextAlignment::RIGHT:
 		alignmentOffset -= textSize;
