@@ -27,6 +27,8 @@ void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet)
 	audio = audioSet;
 	elapsedTime = 0;
 	SetGameState(GameState::IN_GAME_PREPARE);
+
+	PlayMusic(audio.music.c_str());
 }
 
 void Game::ResolvePlayerHit()
@@ -235,7 +237,7 @@ void Game::AnimateDeadScreen()
 	deadTextOptions.y = maxY / 2 - 50;
 	deadTextOptions.alignment = TextAlignment::CENTER;
 
-	AnimateString("you are dead", deadTextOptions);
+	AnimateString("game over", deadTextOptions);
 
 	TextOptions scoredTextOptions;
 	scoredTextOptions.x = maxX / 2;
@@ -243,13 +245,13 @@ void Game::AnimateDeadScreen()
 	scoredTextOptions.alignment = TextAlignment::CENTER;
 	scoredTextOptions.scale = 0.75;
 
-	AnimateString("you scored " + to_string(score), scoredTextOptions);
+	AnimateString("score " + to_string(score), scoredTextOptions);
 
 	TextOptions ctaTextOptions;
 	ctaTextOptions.x = maxX / 2;
-	ctaTextOptions.y = maxY / 2 + 100;
+	ctaTextOptions.y = maxY / 2 + 130;
 	ctaTextOptions.alignment = TextAlignment::CENTER;
-	ctaTextOptions.scale = 0.75;
+	ctaTextOptions.scale = 0.5;
 
 	AnimateString("press enter to start again", ctaTextOptions);
 }

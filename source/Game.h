@@ -46,6 +46,7 @@ namespace SpaceInvaders {
 		void * shipHit;
 		void * ready;
 		void * dead;
+		string music;
 	};
 
 

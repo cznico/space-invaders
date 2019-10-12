@@ -46,6 +46,7 @@ void Game()
 	audios.ready = LoadSnd("sfx/get-ready.ogg");
 	audios.dead = LoadSnd("sfx/game-over.ogg");
 	audios.fire = LoadSnd("sfx/fire.ogg");
+	audios.music = "sfx/Automation.mp3";
 
 	game.Initialize(sprites, audios);
 
