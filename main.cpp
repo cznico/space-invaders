@@ -12,13 +12,14 @@
 using namespace std;
 using namespace SpaceInvaders;
 
-double microtime() {
+double timeInSeconds() {
 	return (double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) / double(1000000));
 }
 
 void Game()
 {
-	SpaceInvaders::Game game = SpaceInvaders::Game(800, 600);
+	auto startTime = timeInSeconds();
+	SpaceInvaders::Game game = SpaceInvaders::Game(800, 600, startTime);
 
 	SpriteSet sprites;
 	sprites.enemy = LoadSprite("gfx/Little Invader.png");
@@ -39,15 +40,13 @@ void Game()
 		sprites.font.emplace(i, LoadSprite(fileName.c_str()));
 	}
 
-	auto startTime = microtime();
+	
 
 	game.Initialize(sprites);
 
 	while (!WantQuit() && !IsKeyDown(VK_ESCAPE))
 	{
-		auto time = (microtime()) - startTime;
-
-		game.Tick(time);
+		game.Tick(timeInSeconds());
 
 		Flip();
 	}

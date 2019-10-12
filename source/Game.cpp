@@ -25,7 +25,7 @@ void Game::Initialize(SpriteSet spriteSet)
 
 	sprites = spriteSet;
 	elapsedTime = 0;
-	state = GameState::IN_GAME;
+	state = GameState::IN_GAME_PREPARE;
 }
 
 void Game::ResolvePlayerHit()
@@ -57,15 +57,17 @@ void Game::ResolveEnemyHits()
 
 void Game::ResolveInteractions()
 {
+	if (state != GameState::IN_GAME) return;
+
 	ResolvePlayerHit();
 	ResolveEnemyHits();
 }
 
-void Game::SetupLevel(int level)
+void Game::SetupLevel(int newLevel)
 {
-	state = GameState::IN_GAME;
 	lives = 3;
-	level = level;
+	level = newLevel;
+	ResetTime();
 
 	for (auto &e : enemies) {
 		e.enabled = true;
@@ -101,6 +103,44 @@ void Game::ResolveGameState()
 		}
 
 	}
+
+	if (state == GameState::IN_GAME_PREPARE && elapsedTime > 3)
+	{
+		state = GameState::IN_GAME;
+		return;
+	}
+
+	if (state == GameState::DEAD && IsKeyDown(VK_RETURN))
+	{
+		ResetGame();
+		state = GameState::IN_GAME_PREPARE;
+		return;
+	}
+
+	if (state == GameState::LEVEL_FINISHED)
+	{
+		SetupLevel(++level);
+		state = GameState::IN_GAME_PREPARE;
+		return;
+	}
+}
+
+void Game::AnimatePrepareOverlay()
+{
+	TextOptions levelTextOptions;
+	levelTextOptions.x = maxX / 2;
+	levelTextOptions.y = maxY / 2 - 25;
+	levelTextOptions.alignment = TextAlignment::CENTER;
+
+	AnimateString("level " + to_string(level), levelTextOptions);
+
+	TextOptions prepareTextOptions;
+	prepareTextOptions.x = maxX / 2;
+	prepareTextOptions.y = maxY / 2 + 25;
+	prepareTextOptions.alignment = TextAlignment::CENTER;
+	prepareTextOptions.scale = 1.2;
+
+	AnimateString("get ready", prepareTextOptions);
 }
 
 void Game::AnimateGameScreen(double timeDiff)
@@ -166,8 +206,6 @@ void Game::AnimateDeadScreen()
 	ctaTextOptions.scale = 0.75;
 
 	AnimateString("press enter to start again", ctaTextOptions);
-
-	if (IsKeyDown(VK_RETURN)) ResetGame();
 }
 
 
@@ -200,6 +238,7 @@ void Game::AnimateString(string text, const TextOptions &options) const
 void Game::AnimateEnemies()
 {
 	int phase = elapsedTime * (100 + (level - 1) * 10); // Every level increases enemy speed by 10%
+
 	for (int n = 0; n<50; ++n)
 	{
 		Invader * enemy = &enemies[n];
@@ -209,9 +248,16 @@ void Game::AnimateEnemies()
 			int xo = 0, yo = 0;
 			int n1 = phase + n * n + n * n*n;
 			int n2 = phase + n + n * n + n * n*n * 3;
-			if (((n1 >> 6) & 0x7) == 0x7)xo += (1 - cos((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
-			if (((n1 >> 6) & 0x7) == 0x7)yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
-			if (((n2 >> 8) & 0xf) == 0xf)yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI))*(150 + ((n*n) % 9));
+			if (((n1 >> 6) & 0x7) == 0x7) // Rotating behaviour
+			{
+				xo += (1 - cos((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
+				yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
+			}
+
+			if (((n2 >> 8) & 0xf) == 0xf) // Swooping behaviour
+			{
+				yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI))*(150 + ((n*n) % 9));
+			}
 
 			enemy->x = enemy->startPosition.x + xo;
 			enemy->y = enemy->startPosition.y + yo;
@@ -238,7 +284,7 @@ void Game::AnimateFiring(double timeDiff)
 
 	if (count) --count;
 	if (!IsKeyDown(VK_SPACE)) count = 0;
-	if (IsKeyDown(VK_SPACE) && count == 0)
+	if (IsKeyDown(VK_SPACE) && count == 0 && state == GameState::IN_GAME)
 	{
 		bullets[b].x = ship.x;
 		bullets[b].y = ship.y;
@@ -256,20 +302,30 @@ void Game::AnimateFiring(double timeDiff)
 	}
 }
 
+void Game::ResetTime()
+{
+	startTime += elapsedTime;
+	elapsedTime = 0;
+}
+
 void Game::Tick(double elapsedMicroseconds)
 {
-	double timeDiff = elapsedMicroseconds - elapsedTime;
-	elapsedTime = elapsedMicroseconds;
+	double newElapsedTime = elapsedMicroseconds - startTime;
+	double timeDiff = newElapsedTime - elapsedTime;
+	elapsedTime = newElapsedTime;
 
 	ResolveGameState();
 
 	switch (state)
 	{
+	case GameState::IN_GAME_PREPARE:
+		AnimateGameScreen(timeDiff);
+		AnimatePrepareOverlay();
+		break;
 	case GameState::IN_GAME:
 		AnimateGameScreen(timeDiff);
 		break;
 	case GameState::LEVEL_FINISHED:
-		SetupLevel(++level);
 		break;
 	case GameState::DEAD:
 		AnimateDeadScreen();

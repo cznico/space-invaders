@@ -12,6 +12,7 @@ using namespace std;
 
 namespace SpaceInvaders {
 	enum GameState {
+		IN_GAME_PREPARE = 0,
 		IN_GAME = 1,
 		HIGHSCORED = 2,
 		LEVEL_FINISHED = 3,
@@ -50,6 +51,7 @@ namespace SpaceInvaders {
 			Bullet bullets[10];
 			Ship ship{0,0};
 
+			double startTime = 0;
 			double elapsedTime = 0;
 			int score = 0;
 			int lives = 3;
@@ -67,18 +69,21 @@ namespace SpaceInvaders {
 			void AnimateShip(double timeDiff);
 			void AnimateFiring(double timeDiff);
 
+			void AnimatePrepareOverlay();
 			void AnimateGameScreen(double timeDiff);
 			void AnimateDeadScreen();
 
 			void ResolveInteractions();
 
-			void SetupLevel(int level);
+			void SetupLevel(int newLevel);
 			void ResetGame();
 
 			void ResolveGameState();
 
+			void ResetTime();
+
 		public:
-			Game(int screenWidth, int screenHeight) : maxX(screenWidth), maxY(screenHeight) {};
+			Game(int screenWidth, int screenHeight, double startTime) : maxX(screenWidth), maxY(screenHeight), startTime(startTime) {};
 
 			void Tick(double elapsedMicroseconds);
 			void Initialize(const SpriteSet spriteSet);
