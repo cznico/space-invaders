@@ -7,7 +7,7 @@
 using namespace std;
 using namespace SpaceInvaders;
 
-void Game::Initialize(SpriteSet spriteSet)
+void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet)
 {
 	for (int n = 0; n < 50; ++n)
 	{
@@ -24,8 +24,9 @@ void Game::Initialize(SpriteSet spriteSet)
 	ship.SetCollisionRadius(40);
 
 	sprites = spriteSet;
+	audio = audioSet;
 	elapsedTime = 0;
-	state = GameState::IN_GAME_PREPARE;
+	SetGameState(GameState::IN_GAME_PREPARE);
 }
 
 void Game::ResolvePlayerHit()
@@ -36,6 +37,7 @@ void Game::ResolvePlayerHit()
 		{
 			invader.enabled = false;
 			lives--;
+			PlaySnd(audio.shipHit, 1);
 		}
 	}
 }
@@ -49,6 +51,7 @@ void Game::ResolveEnemyHits()
 				bullet.enabled = false;
 				invader.enabled = false;
 				score += 10 + (level - 1) * 2; // Every level increases score points by 20%
+ 				PlaySnd(audio.hit, 1);
 			};
 		}
 
@@ -86,6 +89,21 @@ void Game::ResetGame()
 	SetupLevel(1);
 }
 
+void Game::SetGameState(GameState newState)
+{
+	switch (newState)
+	{
+	case GameState::IN_GAME_PREPARE:
+		PlaySnd(audio.ready, 0.7);
+		break;
+	case GameState::DEAD:
+		PlaySnd(audio.dead, 0.7);
+		break;
+	}
+
+	state = newState;
+}
+
 void Game::ResolveGameState()
 {
 	if (state == GameState::IN_GAME)
@@ -93,7 +111,7 @@ void Game::ResolveGameState()
 		if (lives <= 0)
 		{
 			// TODO check if made to high scores
-			state = GameState::DEAD;
+			SetGameState(GameState::DEAD);
 			return;
 		}
 		
@@ -104,12 +122,12 @@ void Game::ResolveGameState()
 
 		if (aliveEnemies == 0)
 		{
-			state = GameState::LEVEL_FINISHED;
+			SetGameState(GameState::LEVEL_FINISHED);
 			return;
 		}
 
 		if (IsKeyDown('P')) {
-			state = GameState::PAUSED;
+			SetGameState(GameState::PAUSED);
 			return;
 		}
 
@@ -117,27 +135,27 @@ void Game::ResolveGameState()
 
 	if (state == GameState::IN_GAME_PREPARE && elapsedTime > 3)
 	{
-		state = GameState::IN_GAME;
+		SetGameState(GameState::IN_GAME);
 		return;
 	}
 
 	if (state == GameState::DEAD && IsKeyDown(VK_RETURN))
 	{
 		ResetGame();
-		state = GameState::IN_GAME_PREPARE;
+		SetGameState(GameState::IN_GAME_PREPARE);
 		return;
 	}
 
 	if (state == GameState::PAUSED && IsKeyDown('P'))
 	{
-		state = GameState::IN_GAME;
+		SetGameState(GameState::IN_GAME);
 		return;
 	}
 
 	if (state == GameState::LEVEL_FINISHED)
 	{
 		SetupLevel(++level);
-		state = GameState::IN_GAME_PREPARE;
+		SetGameState(GameState::IN_GAME_PREPARE);
 		return;
 	}
 }
@@ -319,6 +337,8 @@ void Game::AnimateFiring(double timeDiff)
 		bullets[b].enabled = true;
 		b = (b + 1) % 10;
 		count = 15;
+
+		PlaySnd(audio.fire, 0.5);
 	}
 
 	for (int n = 0; n<10; ++n)

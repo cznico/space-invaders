@@ -40,9 +40,14 @@ void Game()
 		sprites.font.emplace(i, LoadSprite(fileName.c_str()));
 	}
 
-	
+	AudioSet audios;
+	audios.hit = LoadSnd("sfx/hit.ogg");
+	audios.shipHit = LoadSnd("sfx/ship-hit.ogg");
+	audios.ready = LoadSnd("sfx/get-ready.ogg");
+	audios.dead = LoadSnd("sfx/game-over.ogg");
+	audios.fire = LoadSnd("sfx/fire.ogg");
 
-	game.Initialize(sprites);
+	game.Initialize(sprites, audios);
 
 	while (!WantQuit() && !IsKeyDown(VK_ESCAPE))
 	{

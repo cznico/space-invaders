@@ -40,6 +40,14 @@ namespace SpaceInvaders {
 		map<char, IDirect3DTexture9 *> font;
 	};
 
+	struct AudioSet {
+		void * fire;
+		void * hit;
+		void * shipHit;
+		void * ready;
+		void * dead;
+	};
+
 
 	class Game
 	{
@@ -61,6 +69,7 @@ namespace SpaceInvaders {
 			GameState state;
 
 			SpriteSet sprites;
+			AudioSet audio;
 
 			void ResolveEnemyHits();
 			void ResolvePlayerHit();
@@ -81,6 +90,7 @@ namespace SpaceInvaders {
 			void SetupLevel(int newLevel);
 			void ResetGame();
 
+			void SetGameState(GameState newState);
 			void ResolveGameState();
 
 			void ResetTime();
@@ -89,6 +99,6 @@ namespace SpaceInvaders {
 			Game(int screenWidth, int screenHeight, double startTime) : maxX(screenWidth), maxY(screenHeight), startTime(startTime) {};
 
 			void Tick(double elapsedSeconds);
-			void Initialize(const SpriteSet spriteSet);
+			void Initialize(const SpriteSet spriteSet, const AudioSet audioSet);
 	};
 }
