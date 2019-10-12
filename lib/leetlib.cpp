@@ -880,19 +880,19 @@ void StopMusic()
 	music=NULL;
 }
 
-void *LoadSnd(const char *fname, bool looped)
+FSOUND_SAMPLE *LoadSnd(const char *fname, bool looped)
 {
 	int flags=0;
 	if (looped) flags|=FSOUND_LOOP_NORMAL;
 	return FSOUND_Sample_Load(FSOUND_FREE,fname,flags,0,0);
 }
 
-int PlaySnd(void *sound, float volume)
+int PlaySnd(FSOUND_SAMPLE *sound, float volume)
 {
 	if (!sound) return -1;
 	if (volume<=0) volume=0;
 	if (volume>1) volume=1;
-	int chan = FSOUND_PlaySound(FSOUND_FREE,(FSOUND_SAMPLE*)sound);
+	int chan = FSOUND_PlaySound(FSOUND_FREE, sound);
 	FSOUND_SetVolume(chan, (int)(volume*255));
 	return chan;
 }

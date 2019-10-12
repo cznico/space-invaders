@@ -3,7 +3,7 @@
 #include "Bullet.h"
 #include "Ship.h"
 
-#include <d3d9.h>
+#include "../lib/leetlib.h"
 
 #include <map>
 #include <string>
@@ -41,11 +41,11 @@ namespace SpaceInvaders {
 	};
 
 	struct AudioSet {
-		void * fire;
-		void * hit;
-		void * shipHit;
-		void * ready;
-		void * dead;
+		FSOUND_SAMPLE * fire;
+		FSOUND_SAMPLE * hit;
+		FSOUND_SAMPLE * shipHit;
+		FSOUND_SAMPLE * ready;
+		FSOUND_SAMPLE * dead;
 		string music;
 	};
 

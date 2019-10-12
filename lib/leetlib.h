@@ -4,6 +4,7 @@
 
 typedef unsigned long       DWORD;
 struct IDirect3DTexture9;
+struct FSOUND_SAMPLE;
 
 #define PI ((float)3.1415926535)
 
@@ -32,7 +33,7 @@ int PlayMusic(const char *fname, float volume=1); // returns a handle which you 
 void StopMusic();
 
 // sorry for this being 'snd' but otherwise it clashes with a windows #define (PlaySound) grr
-void *LoadSnd(const char *fname, bool loop=false); // if you set loop the sample will go on looping forever, until you call StopSound
-int PlaySnd(void *sound, float volume=1); // returns a handle which you only need if you are going to call StopSound or ChangeVolume()
+FSOUND_SAMPLE *LoadSnd(const char *fname, bool loop=false); // if you set loop the sample will go on looping forever, until you call StopSound
+int PlaySnd(FSOUND_SAMPLE *sound, float volume=1); // returns a handle which you only need if you are going to call StopSound or ChangeVolume()
 void StopSnd(int handle);
 void ChangeVolume(int handle, float newvolume=1);
