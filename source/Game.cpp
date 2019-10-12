@@ -103,32 +103,83 @@ void Game::ResolveGameState()
 	}
 }
 
-void Game::Animate(double timeDiff)
+void Game::AnimateGameScreen(double timeDiff)
 {
 	AnimateEnemies();
 	AnimateShip(timeDiff);
 	AnimateFiring(timeDiff);
 
-	AnimateString("space invaders", maxX / 2, 30, TextAlignment::CENTER);
-	AnimateString(std::to_string(score), 20, maxY - 20);
-	AnimateString(std::to_string(level), maxX - 20, 20);
-	AnimateString(std::to_string(lives), maxX - 20, maxY - 20, TextAlignment::RIGHT);
+	TextOptions headlineTextOptions;
+	headlineTextOptions.x = maxX / 2;
+	headlineTextOptions.y = 30;
+	headlineTextOptions.alignment = TextAlignment::CENTER;
+
+	AnimateString("space invaders", headlineTextOptions);
+
+	TextOptions scoreTextOptions;
+	scoreTextOptions.x = 20;
+	scoreTextOptions.y = maxY - 20;
+	scoreTextOptions.scale = 0.75;
+
+	AnimateString(to_string(score), scoreTextOptions);
+
+	TextOptions levelTextOptions;
+	levelTextOptions.x = 20;
+	levelTextOptions.y = maxY - 50;
+	levelTextOptions.scale = 0.5;
+
+	AnimateString("level " + to_string(level), levelTextOptions);
+	
+	TextOptions livesTextOptions;
+	livesTextOptions.x = maxX - 40;
+	livesTextOptions.y = maxY - 20;
+	livesTextOptions.alignment = TextAlignment::RIGHT;
+
+	AnimateString(to_string(lives) + "x", livesTextOptions);
+
+	DrawSprite(sprites.ship, maxX - 30, maxY - 20, 20, 20, 3.141592 + sin(elapsedTime * 10)*0.1, 0xffffffff);
+
+	ResolveInteractions();
 }
 
-void Game::AnimateString(string text, int x, int y)
+void Game::AnimateDeadScreen()
 {
-	AnimateString(text, x, y, TextAlignment::LEFT);
+	TextOptions deadTextOptions;
+	deadTextOptions.x = maxX / 2;
+	deadTextOptions.y = maxY / 2 - 50;
+	deadTextOptions.alignment = TextAlignment::CENTER;
+
+	AnimateString("you are dead", deadTextOptions);
+
+	TextOptions scoredTextOptions;
+	scoredTextOptions.x = maxX / 2;
+	scoredTextOptions.y = maxY / 2 + 50;
+	scoredTextOptions.alignment = TextAlignment::CENTER;
+	scoredTextOptions.scale = 0.75;
+
+	AnimateString("you scored " + to_string(score), scoredTextOptions);
+
+	TextOptions ctaTextOptions;
+	ctaTextOptions.x = maxX / 2;
+	ctaTextOptions.y = maxY / 2 + 100;
+	ctaTextOptions.alignment = TextAlignment::CENTER;
+	ctaTextOptions.scale = 0.75;
+
+	AnimateString("press enter to start again", ctaTextOptions);
+
+	if (IsKeyDown(VK_RETURN)) ResetGame();
 }
 
-void Game::AnimateString(string text, int x, int y, TextAlignment alignment)
+
+void Game::AnimateString(string text, const TextOptions &options) const
 {
 	int posIndex = 0;
-	int letterSize = 20;
+	int letterSize = 20 * options.scale;
 	int letterSpacing = 2 * letterSize;
 	int alignmentOffset = 0;
 	int textSize = text.length() * letterSpacing;
 
-	switch (alignment) {
+	switch (options.alignment) {
 	case TextAlignment::CENTER:
 		alignmentOffset -= textSize / 2 - letterSpacing / 2;
 		break;
@@ -141,7 +192,7 @@ void Game::AnimateString(string text, int x, int y, TextAlignment alignment)
 
 	for (char &ch : text) {
 		auto sprite = sprites.font.find(ch);
-		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * letterSpacing + x + alignmentOffset, y, letterSize, letterSize, phase * posIndex * 0.01);
+		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * letterSpacing + options.x + alignmentOffset, options.y, letterSize, letterSize, phase * posIndex * 0.01);
 		posIndex++;
 	}
 }
@@ -215,19 +266,13 @@ void Game::Tick(double elapsedMicroseconds)
 	switch (state)
 	{
 	case GameState::IN_GAME:
-		Animate(timeDiff);
-		ResolveInteractions();
+		AnimateGameScreen(timeDiff);
 		break;
 	case GameState::LEVEL_FINISHED:
 		SetupLevel(++level);
 		break;
 	case GameState::DEAD:
-		AnimateString("you are dead", maxX / 2, maxY / 2, TextAlignment::CENTER);
-
-		string scoredText = "you scored ";
-		scoredText = scoredText + to_string(score);
-		AnimateString(scoredText, maxX / 2, maxY / 2 + 50, TextAlignment::CENTER);
-		if (IsKeyDown(VK_RETURN)) ResetGame();
+		AnimateDeadScreen();
 		break;
 	}
 }

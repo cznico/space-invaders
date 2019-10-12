@@ -25,6 +25,13 @@ namespace SpaceInvaders {
 		CENTER = 2
 	};
 
+	struct TextOptions {
+		int x;
+		int y;
+		TextAlignment alignment = TextAlignment::LEFT;
+		float scale = 1.f;
+	};
+
 	struct SpriteSet {
 		IDirect3DTexture9 * enemy;
 		IDirect3DTexture9 * ship;
@@ -54,14 +61,15 @@ namespace SpaceInvaders {
 			void ResolveEnemyHits();
 			void ResolvePlayerHit();
 
-			void AnimateString(string text, int x, int y);
-			void AnimateString(string text, int x, int y, TextAlignment alignment);
+			void AnimateString(string text, const TextOptions &options) const;
 
 			void AnimateEnemies();
 			void AnimateShip(double timeDiff);
 			void AnimateFiring(double timeDiff);
 
-			void Animate(double timeDiff);
+			void AnimateGameScreen(double timeDiff);
+			void AnimateDeadScreen();
+
 			void ResolveInteractions();
 
 			void SetupLevel(int level);
