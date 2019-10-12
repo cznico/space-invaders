@@ -2,11 +2,3 @@
 
 using namespace SpaceInvaders;
 
-Bullet::Bullet()
-{
-}
-
-
-Bullet::~Bullet()
-{
-}

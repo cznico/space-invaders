@@ -1,12 +1,12 @@
 #include "Point.h"
+#include <math.h>
 
 using namespace SpaceInvaders;
 
-Point::Point()
+float Point::Distance(const Point * another) const
 {
-}
+	float offsetX = another->x - x;
+	float offsetY = another->y - y;
 
-
-Point::~Point()
-{
+	return sqrt((offsetX * offsetX) + (offsetY * offsetY));
 }
