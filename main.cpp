@@ -18,7 +18,7 @@ double microtime() {
 
 void Game()
 {
-	SpaceInvaders::Game game;
+	SpaceInvaders::Game game = SpaceInvaders::Game(800, 600);
 
 	SpriteSet sprites;
 	sprites.enemy = LoadSprite("gfx/Little Invader.png");

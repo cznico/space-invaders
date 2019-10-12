@@ -6,14 +6,13 @@ namespace SpaceInvaders {
 	class Ship : public SpaceObject
 	{
 	protected:
-		int MaxLeft = 0;
-		int MaxRight = 800;
+		int maxLeft;
+		int maxRight;
 
 		public:
-			Ship();
-			~Ship();
+			Ship(int maxLeft, int maxRight) : maxLeft(maxLeft), maxRight(maxRight) {};
 
-			void MoveHorizontally(int Offset);
+			void MoveHorizontally(int offset);
 	};
 
 }

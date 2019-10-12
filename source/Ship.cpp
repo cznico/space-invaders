@@ -3,18 +3,10 @@
 
 using namespace SpaceInvaders;
 
-Ship::Ship()
+void Ship::MoveHorizontally(int offset)
 {
-}
+	x += offset;
 
-void Ship::MoveHorizontally(int Offset)
-{
-	x += Offset;
-
-	x = fmax(x, MaxLeft);
-	x = fmin(x, MaxRight);
-}
-
-Ship::~Ship()
-{
+	x = fmax(x, maxLeft);
+	x = fmin(x, maxRight);
 }

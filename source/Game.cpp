@@ -18,13 +18,14 @@ void Game::Initialize(SpriteSet spriteSet)
 		enemies[n].SetCollisionRadius(20);
 	}
 
-	ship = Ship();
-	ship.x = 400;
-	ship.y = 550;
+	ship = Ship(40, maxX - 40);
+	ship.x = maxX / 2;
+	ship.y = maxY - 50;
 	ship.SetCollisionRadius(40);
 
 	sprites = spriteSet;
 	elapsedTime = 0;
+	state = GameState::IN_GAME;
 }
 
 void Game::ResolvePlayerHit()
@@ -38,7 +39,6 @@ void Game::ResolvePlayerHit()
 		}
 	}
 }
-
 
 void Game::ResolveEnemyHits()
 {
@@ -61,25 +61,88 @@ void Game::ResolveInteractions()
 	ResolveEnemyHits();
 }
 
+void Game::SetupLevel(int level)
+{
+	state = GameState::IN_GAME;
+	lives = 3;
+	level = level;
+
+	for (auto &e : enemies) {
+		e.enabled = true;
+	}
+}
+
+void Game::ResetGame()
+{
+	score = 0;
+	SetupLevel(1);
+}
+
+void Game::ResolveGameState()
+{
+	if (state == GameState::IN_GAME)
+	{
+		if (lives <= 0)
+		{
+			// TODO check if made to high scores
+			state = GameState::DEAD;
+
+			return;
+		}
+		
+		int aliveEnemies = 0;
+		for (auto &e : enemies) {
+			if (e.enabled) aliveEnemies++;
+		}
+
+		if (aliveEnemies == 0)
+		{
+			state = GameState::LEVEL_FINISHED;
+
+			return;
+		}
+
+	}
+}
+
 void Game::Animate(double timeDiff)
 {
 	AnimateEnemies();
 	AnimateShip(timeDiff);
 	AnimateFiring(timeDiff);
 
-	AnimateString("space invaders", 150, 30);
-	AnimateString(std::to_string(score), 20, 560);
-	AnimateString(std::to_string(lives), 780, 560);
+	AnimateString("space invaders", maxX / 2, 30, TextAlignment::CENTER);
+	AnimateString(std::to_string(score), 20, maxY - 20);
+	AnimateString(std::to_string(lives), maxX - 20, maxY - 20, TextAlignment::RIGHT);
 }
 
 void Game::AnimateString(string text, int x, int y)
 {
+	AnimateString(text, x, y, TextAlignment::LEFT);
+}
+
+void Game::AnimateString(string text, int x, int y, TextAlignment alignment)
+{
 	int posIndex = 0;
+	int letterSize = 20;
+	int letterSpacing = 2 * letterSize;
+	int alignmentOffset = 0;
+	int textSize = text.length() * letterSpacing;
+
+	switch (alignment) {
+	case TextAlignment::CENTER:
+		alignmentOffset -= textSize / 2;
+		break;
+	case TextAlignment::RIGHT:
+		alignmentOffset -= textSize;
+		break;
+	}
+
 	float phase = sin(elapsedTime * 10);
 
 	for (char &ch : text) {
 		auto sprite = sprites.font.find(ch);
-		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * 40 + x, y, 20, 20, phase * posIndex * 0.01);
+		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * letterSpacing + x + alignmentOffset, y, letterSize, letterSize, phase * posIndex * 0.01);
 		posIndex++;
 	}
 }
@@ -147,6 +210,21 @@ void Game::Tick(double elapsedMicroseconds)
 {
 	double timeDiff = elapsedMicroseconds - elapsedTime;
 	elapsedTime = elapsedMicroseconds;
-	Animate(timeDiff);
-	ResolveInteractions();
+
+	ResolveGameState();
+
+	switch (state)
+	{
+	case GameState::IN_GAME:
+		Animate(timeDiff);
+		ResolveInteractions();
+		break;
+	case GameState::LEVEL_FINISHED:
+		SetupLevel(++level);
+		break;
+	case GameState::DEAD:
+		AnimateString("you are dead", maxX / 2, maxY / 2, TextAlignment::CENTER);
+		if (IsKeyDown(VK_ACCEPT)) ResetGame();
+		break;
+	}
 }
