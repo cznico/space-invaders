@@ -595,14 +595,14 @@ HWND hWnd;
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR cmd, INT )
 {
-	int id = MessageBox(NULL,"fullscreen?","answer me!",MB_YESNOCANCEL);
+	int id = MessageBox(NULL,"Do you want to use game in fullscreen?","Space Invaders - Fullscreen",MB_YESNOCANCEL);
 	if (id==IDCANCEL) return 0;
 	fullscreen=(id==IDYES);
 
     // Register the window class
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, MsgProc, 0L, 0L,
                       GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
-                      "crapcrap", NULL };
+                      "spaceinvaders", NULL };
     RegisterClassEx( &wc );
 
 	RECT r={0,0,800,600};
@@ -611,7 +611,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR cmd, INT )
 AdjustWindowRect(&r,style,false);
 
     // Create the application's window
-     hWnd = CreateWindow( "crapcrap", "crap crap",
+     hWnd = CreateWindow( "spaceinvaders", "Space Invaders",
                               style, 0,0,r.right-r.left,r.bottom-r.top,
                               GetDesktopWindow(), NULL, wc.hInstance, NULL );
 	
@@ -638,7 +638,7 @@ AdjustWindowRect(&r,style,false);
         }
     }
 
-    UnregisterClass( "crapcrap", wc.hInstance );
+    UnregisterClass( "spaceinvaders", wc.hInstance );
     return 0;
 }
 
