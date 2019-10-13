@@ -3,11 +3,12 @@
 #include <math.h>
 #include <iostream>
 #include "../lib/leetlib.h" // TODO remove dep
+#include "Leaderboard.h"
 
 using namespace std;
 using namespace SpaceInvaders;
 
-void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet)
+void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet, Leaderboard * highscores)
 {
 	for (int n = 0; n < 50; ++n)
 	{
@@ -26,9 +27,11 @@ void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet)
 	sprites = spriteSet;
 	audio = audioSet;
 	elapsedTime = 0;
-	SetGameState(GameState::IN_GAME_PREPARE);
+	SetGameState(GameState::LEADERBOARD);
 
 	PlayMusic(audio.music.c_str());
+
+	leaderboard = highscores;
 }
 
 void Game::CaptureName()
@@ -128,7 +131,11 @@ void Game::ResolveGameState()
 	{
 		if (lives <= 0)
 		{
-			// TODO check if made to high scores
+			if (leaderboard->HitLeaderboard(score))
+			{
+				SetGameState(GameState::HIGHSCORED);
+				return;
+			}
 			SetGameState(GameState::DEAD);
 			return;
 		}
@@ -157,7 +164,7 @@ void Game::ResolveGameState()
 		return;
 	}
 
-	if (state == GameState::DEAD && IsKeyDown(VK_RETURN))
+	if (state == GameState::DEAD && IsKeyHitSinceLastFlip(VK_RETURN))
 	{
 		ResetGame();
 		SetGameState(GameState::IN_GAME_PREPARE);
@@ -173,6 +180,22 @@ void Game::ResolveGameState()
 	if (state == GameState::LEVEL_FINISHED)
 	{
 		SetupLevel(++level);
+		SetGameState(GameState::IN_GAME_PREPARE);
+		return;
+	}
+
+	if (state == GameState::HIGHSCORED && IsKeyHitSinceLastFlip(VK_RETURN))
+	{
+		leaderboard->Update(score, playerName);
+		leaderboard->Save();
+
+		SetGameState(GameState::LEADERBOARD);
+		return;
+	}
+
+	if (state == GameState::LEADERBOARD && IsKeyHitSinceLastFlip(VK_RETURN))
+	{
+		ResetGame();
 		SetGameState(GameState::IN_GAME_PREPARE);
 		return;
 	}
@@ -299,6 +322,46 @@ void Game::AnimateHighscoreScreen()
 	AnimateString(playerName, nameTextOptions);
 
 	CaptureName();
+}
+
+void Game::AnimateLeaderboardScreen()
+{
+	int row = 150;
+
+	TextOptions headlineTextOptions;
+	headlineTextOptions.x = maxX / 2;
+	headlineTextOptions.y = row - 70;
+	headlineTextOptions.alignment = TextAlignment::CENTER;
+
+	AnimateString("leaderboard", headlineTextOptions);
+
+	for (auto item : (*leaderboard->getItems()))
+	{
+		TextOptions nameTextOptions;
+		nameTextOptions.x = 100;
+		nameTextOptions.y = row;
+		nameTextOptions.scale = 0.75;
+
+		AnimateString(item.name, nameTextOptions);
+
+		TextOptions scoreTextOptions;
+		scoreTextOptions.x = maxX - 100;
+		scoreTextOptions.y = row;
+		scoreTextOptions.alignment = TextAlignment::RIGHT;
+		scoreTextOptions.scale = 0.75;
+
+		AnimateString(to_string(item.score), scoreTextOptions);
+
+		row += 40;
+	}
+
+	TextOptions ctaTextOptions;
+	ctaTextOptions.x = maxX / 2;
+	ctaTextOptions.y = row;
+	ctaTextOptions.alignment = TextAlignment::CENTER;
+	ctaTextOptions.scale = 0.5;
+
+	AnimateString("press enter to continue", ctaTextOptions);
 }
 
 void Game::AnimateString(string text, const TextOptions &options) const
@@ -431,6 +494,9 @@ void Game::Tick(double elapsedSeconds)
 		break;
 	case GameState::HIGHSCORED:
 		AnimateHighscoreScreen();
+		break;
+	case GameState::LEADERBOARD:
+		AnimateLeaderboardScreen();
 		break;
 	}
 }

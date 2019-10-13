@@ -37,6 +37,9 @@
     <ClCompile Include="source\Invader.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="source\Leaderboard.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\leetlib.h">
@@ -57,6 +60,11 @@
     <ClInclude Include="source\SpaceObject.h">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\Invader.h" />
+    <ClInclude Include="source\Invader.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Leaderboard.h">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

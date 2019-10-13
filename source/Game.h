@@ -11,13 +11,16 @@
 using namespace std;
 
 namespace SpaceInvaders {
+	class Leaderboard;
+
 	enum GameState {
 		IN_GAME_PREPARE = 0,
 		IN_GAME = 1,
 		HIGHSCORED = 2,
 		LEVEL_FINISHED = 3,
 		DEAD = 4,
-		PAUSED = 5
+		PAUSED = 5,
+		LEADERBOARD = 6
 	};
 
 	enum TextAlignment {
@@ -71,6 +74,7 @@ namespace SpaceInvaders {
 
 			SpriteSet sprites;
 			AudioSet audio;
+			Leaderboard * leaderboard;
 
 			string playerName;
 
@@ -90,6 +94,7 @@ namespace SpaceInvaders {
 			void AnimateGameScreen(double timeDiff);
 			void AnimateDeadScreen();
 			void AnimateHighscoreScreen();
+			void AnimateLeaderboardScreen();
 
 			void ResolveInteractions();
 
@@ -105,6 +110,6 @@ namespace SpaceInvaders {
 			Game(int screenWidth, int screenHeight, double startTime) : maxX(screenWidth), maxY(screenHeight), startTime(startTime) {};
 
 			void Tick(double elapsedSeconds);
-			void Initialize(const SpriteSet spriteSet, const AudioSet audioSet);
+			void Initialize(const SpriteSet spriteSet, const AudioSet audioSet, Leaderboard * leaderboard);
 	};
 }

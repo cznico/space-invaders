@@ -90,6 +90,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Leaderboard.cpp" />
     <ClCompile Include="source\Invader.cpp" />
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="lib\leetlib.cpp" />
@@ -100,6 +101,7 @@
     <ClCompile Include="source\SpaceObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Leaderboard.h" />
     <ClInclude Include="source\Invader.h" />
     <ClInclude Include="source\Game.h" />
     <ClInclude Include="lib\leetlib.h" />

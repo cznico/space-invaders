@@ -5,9 +5,7 @@
 #include <chrono>
 
 #include "source/Game.h"
-#include "source/Ship.h"
-#include "source/Bullet.h"
-#include "source/Invader.h"
+#include "source/Leaderboard.h"
 
 using namespace std;
 using namespace SpaceInvaders;
@@ -25,6 +23,15 @@ void Game()
 	sprites.enemy = LoadSprite("gfx/Little Invader.png");
 	sprites.ship = LoadSprite("gfx/Big Invader.png");
 	sprites.bullet = LoadSprite("gfx/bullet.png");
+
+	Leaderboard highscores;
+
+	highscores.Load("leaderboard.txt");
+
+	bool hitLeaderboard = highscores.HitLeaderboard(400);
+	highscores.Update(400, "john snow");
+	highscores.Update(300, "terry pratched");
+	highscores.Update(500, "patrick swayze");
 
 	for (char i = 'a'; i <= 'z'; ++i) {
 		string fileName = "gfx/";
@@ -48,7 +55,7 @@ void Game()
 	audios.fire = LoadSnd("sfx/fire.ogg");
 	audios.music = "sfx/Automation.mp3";
 
-	game.Initialize(sprites, audios);
+	game.Initialize(sprites, audios, &highscores);
 
 	while (!WantQuit() && !IsKeyDown(VK_ESCAPE))
 	{
