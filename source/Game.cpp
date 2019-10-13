@@ -433,19 +433,22 @@ void Game::AnimateShip(double timeDiff)
 void Game::AnimateFiring(double timeDiff)
 {
 	static int b = 0; // TODO move this to class/object space
-	static int count = 0;  // TODO move this to class/object space
+	static double shotDelay = 0;  // TODO move this to class/object space
 
 	int speed = timeDiff * 400;
 
-	if (count) --count;
-	if (!IsKeyDown(VK_SPACE)) count = 0;
-	if (IsKeyDown(VK_SPACE) && count == 0 && state == GameState::IN_GAME)
+	if (shotDelay > 0)
+	{
+		shotDelay -= timeDiff;
+	}
+	if (!IsKeyDown(VK_SPACE)) shotDelay = 0;
+	if (IsKeyDown(VK_SPACE) && shotDelay <= 0 && state == GameState::IN_GAME)
 	{
 		bullets[b].x = ship.x;
 		bullets[b].y = ship.y;
 		bullets[b].enabled = true;
 		b = (b + 1) % 10;
-		count = 15;
+		shotDelay = .25f; // 250ms rate of fire
 
 		PlaySnd(audio.fire, 0.5);
 	}
