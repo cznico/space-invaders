@@ -400,7 +400,8 @@ void Game::AnimateEnemies()
 
 		if (enemy->enabled)
 		{
-			int xo = 0, yo = 0;
+			int xo = 0;
+			int yo = min((int)(phase / 1000) * 30, 200); // Descending behaviour
 			int n1 = phase + n * n + n * n*n;
 			int n2 = phase + n + n * n + n * n*n * 3;
 			if (((n1 >> 6) & 0x7) == 0x7) // Rotating behaviour
