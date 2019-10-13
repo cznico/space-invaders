@@ -28,11 +28,6 @@ void Game()
 
 	highscores.Load("leaderboard.txt");
 
-	bool hitLeaderboard = highscores.HitLeaderboard(400);
-	highscores.Update(400, "john snow");
-	highscores.Update(300, "terry pratched");
-	highscores.Update(500, "patrick swayze");
-
 	for (char i = 'a'; i <= 'z'; ++i) {
 		string fileName = "gfx/";
 		fileName = fileName + i;

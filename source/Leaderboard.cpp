@@ -1,6 +1,9 @@
 #include "Leaderboard.h"
 
+#include <fstream>
+
 using namespace SpaceInvaders;
+using namespace std;
 
 bool compareLeaderboardItems(LeaderboardItem first, LeaderboardItem second)
 {
@@ -11,7 +14,20 @@ void Leaderboard::Load(string name)
 {
 	fileName = name;
 
-	// TODO load from file
+	string row;
+	ifstream inFile;
+
+	inFile.open(fileName);
+	if (!inFile.is_open()) return;
+
+	while (getline(inFile, row))
+	{
+		auto item = LeaderboardItem::deserialize(row);
+		boardItems.push_back(item);
+	}
+
+	sort(boardItems.begin(), boardItems.end(), compareLeaderboardItems);
+	inFile.close();
 }
 
 void Leaderboard::Update(unsigned int score, string name)
@@ -37,5 +53,15 @@ bool Leaderboard::HitLeaderboard(unsigned int score)
 
 void Leaderboard::Save()
 {
+	ofstream outFile;
 
+	outFile.open(fileName);
+
+	if (!outFile.is_open()) return;
+
+	for (auto item : boardItems)
+	{
+		outFile << item.serialize() << endl;
+	}
+	 
 }

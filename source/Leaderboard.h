@@ -11,6 +11,22 @@ namespace SpaceInvaders
 	struct LeaderboardItem {
 		string name;
 		unsigned int score = 0;
+
+		static LeaderboardItem deserialize(string input)
+		{
+			LeaderboardItem item;
+
+			string::size_type sz;
+			item.score = stoi(input, &sz);
+			item.name = input.substr(++sz);
+
+			return item;
+		};
+
+		string serialize()
+		{
+			return to_string(score) + ";" + name;
+		};
 	};
 
 	class Leaderboard
