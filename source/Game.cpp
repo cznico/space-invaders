@@ -128,7 +128,7 @@ void Game::ResolveGameState()
 			return;
 		}
 
-		if (IsKeyDown('P')) {
+		if (IsKeyHitSinceLastFlip('P')) {
 			SetGameState(GameState::PAUSED);
 			return;
 		}
@@ -148,7 +148,7 @@ void Game::ResolveGameState()
 		return;
 	}
 
-	if (state == GameState::PAUSED && IsKeyDown('P'))
+	if (state == GameState::PAUSED && IsKeyHitSinceLastFlip('P'))
 	{
 		SetGameState(GameState::IN_GAME);
 		return;

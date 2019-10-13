@@ -20,6 +20,7 @@ void Game(); // you write this :)
 // input
 void GetMousePos(float &x, float &y); // 0,0 is top left; 800,600 is bottom right
 bool IsKeyDown(int key); // use windows VK_ codes for special keys, eg VK_LEFT; use capital chars for letter keys eg 'A', '0'. use VK_LBUTTON and VK_RBUTTON for mouse buttons. 
+bool IsKeyHitSinceLastFlip(int key);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // output

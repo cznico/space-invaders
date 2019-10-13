@@ -731,11 +731,10 @@ bool IsKeyDown(int key) // use windows VK_ codes for special keys, eg VK_LEFT; u
 	return g_keydown[key&255];
 }
 
-/*bool IsKeyHitSinceLastFlip(int key)
+bool IsKeyHitSinceLastFlip(int key)
 {
 	return g_keyhit[key&255] > 0;
 }
-*/
 
 // 'sprite output' 
 IDirect3DTexture9 *LoadSprite(const char *fname)
