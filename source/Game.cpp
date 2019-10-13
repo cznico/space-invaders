@@ -19,7 +19,7 @@ void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet, Leaderboard * high
 		enemies[n].SetCollisionRadius(20);
 	}
 
-	ship = Ship(40, maxX - 40);
+	ship = Ship(60, maxX - 60);
 	ship.x = maxX / 2;
 	ship.y = maxY - 50;
 	ship.SetCollisionRadius(40);
