@@ -72,6 +72,10 @@ namespace SpaceInvaders {
 			SpriteSet sprites;
 			AudioSet audio;
 
+			string playerName;
+
+			void CaptureName();
+
 			void ResolveEnemyHits();
 			void ResolvePlayerHit();
 
@@ -85,6 +89,7 @@ namespace SpaceInvaders {
 			void AnimatePrepareOverlay();
 			void AnimateGameScreen(double timeDiff);
 			void AnimateDeadScreen();
+			void AnimateHighscoreScreen();
 
 			void ResolveInteractions();
 

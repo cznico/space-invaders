@@ -31,6 +31,22 @@ void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet)
 	PlayMusic(audio.music.c_str());
 }
 
+void Game::CaptureName()
+{
+	if (IsKeyHitSinceLastFlip(VK_BACK) && playerName.length() > 0)
+	{
+		playerName.pop_back();
+	}
+
+	for (char i = 'a'; i <= 'z'; ++i)
+	{
+		if (IsKeyHitSinceLastFlip(i - 32))
+		{
+			playerName += i;
+		}
+	}
+}
+
 void Game::ResolvePlayerHit()
 {
 	for (Invader &invader : enemies)
@@ -257,6 +273,34 @@ void Game::AnimateDeadScreen()
 }
 
 
+void Game::AnimateHighscoreScreen()
+{
+	TextOptions highscoreTextOptions;
+	highscoreTextOptions.x = maxX / 2;
+	highscoreTextOptions.y = maxY / 2 - 50;
+	highscoreTextOptions.alignment = TextAlignment::CENTER;
+
+	AnimateString("high score", highscoreTextOptions);
+
+	TextOptions promptTextOptions;
+	promptTextOptions.x = maxX / 2;
+	promptTextOptions.y = maxY / 2 + 50;
+	promptTextOptions.alignment = TextAlignment::CENTER;
+	promptTextOptions.scale = 0.75;
+
+	AnimateString("insert your name", promptTextOptions);
+
+	TextOptions nameTextOptions;
+	nameTextOptions.x = maxX / 2;
+	nameTextOptions.y = maxY / 2 + 130;
+	nameTextOptions.alignment = TextAlignment::CENTER;
+	nameTextOptions.scale = 0.5;
+
+	AnimateString(playerName, nameTextOptions);
+
+	CaptureName();
+}
+
 void Game::AnimateString(string text, const TextOptions &options) const
 {
 	int posIndex = 0;
@@ -384,6 +428,9 @@ void Game::Tick(double elapsedSeconds)
 		break;
 	case GameState::DEAD:
 		AnimateDeadScreen();
+		break;
+	case GameState::HIGHSCORED:
+		AnimateHighscoreScreen();
 		break;
 	}
 }
