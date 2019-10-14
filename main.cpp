@@ -14,11 +14,8 @@ double timeInSeconds() {
 	return GetTimeInMS() / (double)1000;
 }
 
-void Game()
+SpriteSet LoadSpriteSet()
 {
-	auto startTime = timeInSeconds();
-	SpaceInvaders::Game game = SpaceInvaders::Game(800, 600, startTime);
-
 	SpriteSet sprites;
 	sprites.enemy = LoadSprite("gfx/Little Invader.png");
 	sprites.ship = LoadSprite("gfx/donkey-kong.png");
@@ -35,7 +32,7 @@ void Game()
 		fileName = fileName + "let.png";
 		sprites.font.emplace(i, LoadSprite(fileName.c_str()));
 	}
-	
+
 	for (char i = '0'; i <= '9'; ++i) {
 		string fileName = "gfx/num";
 		fileName = fileName + i;
@@ -43,15 +40,35 @@ void Game()
 		sprites.font.emplace(i, LoadSprite(fileName.c_str()));
 	}
 
-	AudioSet audios;
-	audios.hit = LoadSnd("sfx/hit.ogg");
-	audios.shipHit = LoadSnd("sfx/ship-hit.ogg");
-	audios.ready = LoadSnd("sfx/get-ready.ogg");
-	audios.dead = LoadSnd("sfx/game-over.ogg");
-	audios.fire = LoadSnd("sfx/fire.ogg");
-	audios.music = "sfx/Automation.mp3";
+	return sprites;
+}
 
-	game.Initialize(sprites, audios, &highscores);
+AudioSet LoadAudioSet()
+{
+	AudioSet audioSet;
+	audioSet.hit = LoadSnd("sfx/hit.ogg");
+	audioSet.shipHit = LoadSnd("sfx/ship-hit.ogg");
+	audioSet.ready = LoadSnd("sfx/get-ready.ogg");
+	audioSet.dead = LoadSnd("sfx/game-over.ogg");
+	audioSet.fire = LoadSnd("sfx/fire.ogg");
+	audioSet.music = "sfx/Automation.mp3";
+
+	return audioSet;
+}
+
+void Game()
+{
+	auto startTime = timeInSeconds();
+	SpaceInvaders::Game game = SpaceInvaders::Game(800, 600, startTime);
+
+	SpriteSet spriteSet = LoadSpriteSet();
+	AudioSet audioSet = LoadAudioSet();
+	
+	Leaderboard highscores;
+
+	highscores.Load("leaderboard.txt");
+
+	game.Initialize(&spriteSet, &audioSet, &highscores);
 
 	while (!WantQuit() && !IsKeyDown(VK_ESCAPE))
 	{

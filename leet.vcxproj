@@ -100,6 +100,7 @@
     <ClCompile Include="source\Ship.cpp" />
     <ClCompile Include="source\Bullet.cpp" />
     <ClCompile Include="source\SpaceObject.cpp" />
+    <ClCompile Include="source\UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Effect.h" />
@@ -111,6 +112,7 @@
     <ClInclude Include="source\Ship.h" />
     <ClInclude Include="source\Bullet.h" />
     <ClInclude Include="source\SpaceObject.h" />
+    <ClInclude Include="source\UserInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

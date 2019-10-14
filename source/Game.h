@@ -2,6 +2,7 @@
 #include "Invader.h"
 #include "Bullet.h"
 #include "Ship.h"
+#include "UserInterface.h"
 
 #include "../lib/leetlib.h"
 
@@ -23,43 +24,14 @@ namespace SpaceInvaders {
 		LEADERBOARD = 6
 	};
 
-	enum TextAlignment {
-		LEFT = 0,
-		RIGHT = 1,
-		CENTER = 2
-	};
-
-	struct TextOptions {
-		int x;
-		int y;
-		TextAlignment alignment = TextAlignment::LEFT;
-		float scale = 1.f;
-	};
-
-	struct SpriteSet {
-		IDirect3DTexture9 * enemy;
-		IDirect3DTexture9 * ship;
-		IDirect3DTexture9 * bullet;
-		IDirect3DTexture9 * explosion;
-		map<char, IDirect3DTexture9 *> font;
-	};
-
-	struct AudioSet {
-		FSOUND_SAMPLE * fire;
-		FSOUND_SAMPLE * hit;
-		FSOUND_SAMPLE * shipHit;
-		FSOUND_SAMPLE * ready;
-		FSOUND_SAMPLE * dead;
-		string music;
-	};
-
-
 	class Game
 	{
 		protected:
 			int maxX = 0;
 			int maxY = 0;
 
+			UserInterface ui{0, 0};
+			
 			Invader enemies[50];
 			Bullet bullets[10];
 			Ship ship{0,0};
@@ -73,8 +45,8 @@ namespace SpaceInvaders {
 			int level = 1;
 			GameState state;
 
-			SpriteSet sprites;
-			AudioSet audio;
+			SpriteSet * sprites;
+			AudioSet * audio;
 			Leaderboard * leaderboard;
 
 			string playerName;
@@ -84,18 +56,11 @@ namespace SpaceInvaders {
 			void ResolveEnemyHits();
 			void ResolvePlayerHit();
 
-			void AnimateString(string text, const TextOptions &options) const;
-
 			void AnimateEnemies();
 			void AnimateShip(double timeDiff);
 			void AnimateFiring(double timeDiff);
 
-			void AnimatePausedOverlay();
-			void AnimatePrepareOverlay();
-			void AnimateGameScreen(double timeDiff);
-			void AnimateDeadScreen();
-			void AnimateHighscoreScreen();
-			void AnimateLeaderboardScreen();
+			void AnimateGame(double timeDiff);
 
 			void ResolveInteractions();
 
@@ -111,6 +76,6 @@ namespace SpaceInvaders {
 			Game(int screenWidth, int screenHeight, double startTime) : maxX(screenWidth), maxY(screenHeight), startTime(startTime) {};
 
 			void Tick(double elapsedSeconds);
-			void Initialize(const SpriteSet spriteSet, const AudioSet audioSet, Leaderboard * leaderboard);
+			void Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * leaderboard);
 	};
 }

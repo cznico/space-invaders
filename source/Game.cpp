@@ -8,7 +8,7 @@
 using namespace std;
 using namespace SpaceInvaders;
 
-void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet, Leaderboard * highscores)
+void Game::Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * highscores)
 {
 	for (int n = 0; n < 50; ++n)
 	{
@@ -28,10 +28,14 @@ void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet, Leaderboard * high
 
 	sprites = spriteSet;
 	audio = audioSet;
+
+	ui = UserInterface(maxX, maxY);
+	ui.SetSpriteSet(spriteSet);
+
 	elapsedTime = 0;
 	SetGameState(GameState::LEADERBOARD);
 
-	PlayMusic(audio.music.c_str());
+	PlayMusic(audio->music.c_str());
 
 	leaderboard = highscores;
 }
@@ -60,7 +64,7 @@ void Game::ResolvePlayerHit()
 		{
 			invader.Kill(gameTime);
 			lives--;
-			PlaySnd(audio.shipHit, 1);
+			PlaySnd(audio->shipHit, 1);
 		}
 	}
 }
@@ -74,7 +78,7 @@ void Game::ResolveEnemyHits()
 				bullet.enabled = false;
 				invader.Kill(gameTime);
 				score += 10 + (level - 1) * 2; // Every level increases score points by 20%
- 				PlaySnd(audio.hit, 1);
+ 				PlaySnd(audio->hit, 1);
 			};
 		}
 
@@ -117,10 +121,10 @@ void Game::SetGameState(GameState newState)
 	switch (newState)
 	{
 	case GameState::IN_GAME_PREPARE:
-		PlaySnd(audio.ready, 0.7);
+		PlaySnd(audio->ready, 0.7);
 		break;
 	case GameState::DEAD:
-		PlaySnd(audio.dead, 0.7);
+		PlaySnd(audio->dead, 0.7);
 		break;
 	}
 
@@ -203,194 +207,16 @@ void Game::ResolveGameState()
 	}
 }
 
-void Game::AnimatePrepareOverlay()
-{
-	TextOptions levelTextOptions;
-	levelTextOptions.x = maxX / 2;
-	levelTextOptions.y = maxY / 2 - 25;
-	levelTextOptions.alignment = TextAlignment::CENTER;
 
-	AnimateString("level " + to_string(level), levelTextOptions);
-
-	TextOptions prepareTextOptions;
-	prepareTextOptions.x = maxX / 2;
-	prepareTextOptions.y = maxY / 2 + 25;
-	prepareTextOptions.alignment = TextAlignment::CENTER;
-	prepareTextOptions.scale = 1.2;
-
-	AnimateString("get ready", prepareTextOptions);
-}
-
-void Game::AnimatePausedOverlay()
-{
-	TextOptions pauseTextOptions;
-	pauseTextOptions.x = maxX / 2;
-	pauseTextOptions.y = maxY / 2;
-	pauseTextOptions.alignment = TextAlignment::CENTER;
-	pauseTextOptions.scale = 1.2;
-
-	AnimateString("pause", pauseTextOptions);
-}
-
-void Game::AnimateGameScreen(double timeDiff)
+void Game::AnimateGame(double timeDiff)
 {
 	AnimateEnemies();
 	AnimateShip(timeDiff);
 	AnimateFiring(timeDiff);
 
-	TextOptions headlineTextOptions;
-	headlineTextOptions.x = maxX / 2;
-	headlineTextOptions.y = 30;
-	headlineTextOptions.alignment = TextAlignment::CENTER;
-
-	AnimateString("space invaders", headlineTextOptions);
-
-	TextOptions scoreTextOptions;
-	scoreTextOptions.x = 20;
-	scoreTextOptions.y = maxY - 20;
-	scoreTextOptions.scale = 0.75;
-
-	AnimateString(to_string(score), scoreTextOptions);
-
-	TextOptions levelTextOptions;
-	levelTextOptions.x = 20;
-	levelTextOptions.y = maxY - 50;
-	levelTextOptions.scale = 0.5;
-
-	AnimateString("level " + to_string(level), levelTextOptions);
-	
-	TextOptions livesTextOptions;
-	livesTextOptions.x = maxX - 40;
-	livesTextOptions.y = maxY - 20;
-	livesTextOptions.alignment = TextAlignment::RIGHT;
-
-	AnimateString(to_string(lives) + "x", livesTextOptions);
-
-	DrawSprite(sprites.ship, maxX - 30, maxY - 20, 20, 20, sin(elapsedTime * 10)*0.1, 0xffffffff);
-
 	ResolveInteractions();
 }
 
-void Game::AnimateDeadScreen()
-{
-	TextOptions deadTextOptions;
-	deadTextOptions.x = maxX / 2;
-	deadTextOptions.y = maxY / 2 - 50;
-	deadTextOptions.alignment = TextAlignment::CENTER;
-
-	AnimateString("game over", deadTextOptions);
-
-	TextOptions scoredTextOptions;
-	scoredTextOptions.x = maxX / 2;
-	scoredTextOptions.y = maxY / 2 + 50;
-	scoredTextOptions.alignment = TextAlignment::CENTER;
-	scoredTextOptions.scale = 0.75;
-
-	AnimateString("score " + to_string(score), scoredTextOptions);
-
-	TextOptions ctaTextOptions;
-	ctaTextOptions.x = maxX / 2;
-	ctaTextOptions.y = maxY / 2 + 130;
-	ctaTextOptions.alignment = TextAlignment::CENTER;
-	ctaTextOptions.scale = 0.5;
-
-	AnimateString("press enter to start again", ctaTextOptions);
-}
-
-
-void Game::AnimateHighscoreScreen()
-{
-	TextOptions highscoreTextOptions;
-	highscoreTextOptions.x = maxX / 2;
-	highscoreTextOptions.y = maxY / 2 - 50;
-	highscoreTextOptions.alignment = TextAlignment::CENTER;
-
-	AnimateString("high score", highscoreTextOptions);
-
-	TextOptions promptTextOptions;
-	promptTextOptions.x = maxX / 2;
-	promptTextOptions.y = maxY / 2 + 50;
-	promptTextOptions.alignment = TextAlignment::CENTER;
-	promptTextOptions.scale = 0.75;
-
-	AnimateString("insert your name", promptTextOptions);
-
-	TextOptions nameTextOptions;
-	nameTextOptions.x = maxX / 2;
-	nameTextOptions.y = maxY / 2 + 130;
-	nameTextOptions.alignment = TextAlignment::CENTER;
-	nameTextOptions.scale = 0.5;
-
-	AnimateString(playerName, nameTextOptions);
-
-	CaptureName();
-}
-
-void Game::AnimateLeaderboardScreen()
-{
-	int row = 150;
-
-	TextOptions headlineTextOptions;
-	headlineTextOptions.x = maxX / 2;
-	headlineTextOptions.y = row - 70;
-	headlineTextOptions.alignment = TextAlignment::CENTER;
-
-	AnimateString("leaderboard", headlineTextOptions);
-
-	for (auto item : (*leaderboard->getItems()))
-	{
-		TextOptions nameTextOptions;
-		nameTextOptions.x = 100;
-		nameTextOptions.y = row;
-		nameTextOptions.scale = 0.75;
-
-		AnimateString(item.name, nameTextOptions);
-
-		TextOptions scoreTextOptions;
-		scoreTextOptions.x = maxX - 100;
-		scoreTextOptions.y = row;
-		scoreTextOptions.alignment = TextAlignment::RIGHT;
-		scoreTextOptions.scale = 0.75;
-
-		AnimateString(to_string(item.score), scoreTextOptions);
-
-		row += 40;
-	}
-
-	TextOptions ctaTextOptions;
-	ctaTextOptions.x = maxX / 2;
-	ctaTextOptions.y = row;
-	ctaTextOptions.alignment = TextAlignment::CENTER;
-	ctaTextOptions.scale = 0.5;
-
-	AnimateString("press enter to continue", ctaTextOptions);
-}
-
-void Game::AnimateString(string text, const TextOptions &options) const
-{
-	int posIndex = 0;
-	int letterSize = 20 * options.scale;
-	int letterSpacing = 2 * letterSize;
-	int alignmentOffset = 0;
-	int textSize = text.length() * letterSpacing;
-
-	switch (options.alignment) {
-	case TextAlignment::CENTER:
-		alignmentOffset -= textSize / 2 - letterSpacing / 2;
-		break;
-	case TextAlignment::RIGHT:
-		alignmentOffset -= textSize;
-		break;
-	}
-
-	float phase = sin(elapsedTime * 10);
-
-	for (char &ch : text) {
-		auto sprite = sprites.font.find(ch);
-		if (sprite != sprites.font.end()) DrawSprite(sprite->second, posIndex * letterSpacing + options.x + alignmentOffset, options.y, letterSize, letterSize, phase * posIndex * 0.01);
-		posIndex++;
-	}
-}
 
 void Game::AnimateEnemies()
 {
@@ -423,7 +249,7 @@ void Game::AnimateEnemies()
 			enemy->x = enemy->startPosition.x + xo;
 			enemy->y = enemy->startPosition.y + yo;
 
-			DrawSprite(sprites.enemy, enemy->x, enemy->y, enemy->size, enemy->size, 0, 0xffffffff);
+			DrawSprite(sprites->enemy, enemy->x, enemy->y, enemy->size, enemy->size, 0, 0xffffffff);
 		}
 	}
 
@@ -439,7 +265,7 @@ void Game::AnimateEnemies()
 
 			if (explosionPhase < 1.f)
 			{
-				DrawSprite(sprites.explosion, explosion->x, explosion->y, enemy->size + explosionPhase * 30, enemy->size + explosionPhase * 30, gameTime, 0xffffffff);
+				DrawSprite(sprites->explosion, explosion->x, explosion->y, enemy->size + explosionPhase * 30, enemy->size + explosionPhase * 30, gameTime, 0xffffffff);
 			}
 
 		}
@@ -451,7 +277,7 @@ void Game::AnimateShip(double timeDiff)
 	int speed = timeDiff * 700;
 	ship.MoveHorizontally(IsKeyDown(VK_LEFT) ? -speed : IsKeyDown(VK_RIGHT) ? speed : 0);
 
-	DrawSprite(sprites.ship, ship.x, ship.y, 50, 50, sin(elapsedTime * 10) * 0.1, 0xffffffff);
+	DrawSprite(sprites->ship, ship.x, ship.y, 50, 50, sin(elapsedTime * 10) * 0.1, 0xffffffff);
 }
 
 void Game::AnimateFiring(double timeDiff)
@@ -474,7 +300,7 @@ void Game::AnimateFiring(double timeDiff)
 		b = (b + 1) % 10;
 		shotDelay = .25f; // 250ms rate of fire
 
-		PlaySnd(audio.fire, 0.5);
+		PlaySnd(audio->fire, 0.5);
 	}
 
 	for (int n = 0; n<10; ++n)
@@ -485,7 +311,7 @@ void Game::AnimateFiring(double timeDiff)
 			bullet.y -= speed;
 			bullet.rotation += timeDiff * 2;
 
-			DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y, 15, 15, bullets[n].rotation, 0xffffffff);
+			DrawSprite(sprites->bullet, bullets[n].x, bullets[n].y, 15, 15, bullets[n].rotation, 0xffffffff);
 		}		
 	}
 }
@@ -502,32 +328,38 @@ void Game::Tick(double elapsedSeconds)
 	double timeDiff = newElapsedTime - elapsedTime;
 	elapsedTime = newElapsedTime;
 
+	ui.SetAnimationTime(elapsedTime);
+
 	ResolveGameState();
 
 	switch (state)
 	{
 	case GameState::PAUSED:
-		AnimateGameScreen(0);
-		AnimatePausedOverlay();
+		AnimateGame(0);
+		ui.RenderGameOverlay(lives, score, level);
+		ui.RenderPausedOverlay();
 		break;
 	case GameState::IN_GAME_PREPARE:
-		AnimateGameScreen(timeDiff);
-		AnimatePrepareOverlay();
+		AnimateGame(timeDiff);
+		ui.RenderGameOverlay(lives, score, level);
+		ui.RenderPrepareOverlay(level);
 		break;
 	case GameState::IN_GAME:
 		gameTime += timeDiff;
-		AnimateGameScreen(timeDiff);
+		AnimateGame(timeDiff);
+		ui.RenderGameOverlay(lives, score, level);
 		break;
 	case GameState::LEVEL_FINISHED:
 		break;
 	case GameState::DEAD:
-		AnimateDeadScreen();
+		ui.RenderDeadScreen(score);
 		break;
 	case GameState::HIGHSCORED:
-		AnimateHighscoreScreen();
+		ui.RenderHighscoreScreen(playerName);
+		CaptureName();
 		break;
 	case GameState::LEADERBOARD:
-		AnimateLeaderboardScreen();
+		ui.RenderLeaderboardScreen(leaderboard);
 		break;
 	}
 }

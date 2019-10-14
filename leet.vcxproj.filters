@@ -43,6 +43,9 @@
     <ClCompile Include="source\Effect.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="source\UserInterface.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\leetlib.h">
@@ -70,6 +73,9 @@
       <Filter>source</Filter>
     </ClInclude>
     <ClInclude Include="source\Effect.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UserInterface.h">
       <Filter>source</Filter>
     </ClInclude>
   </ItemGroup>
