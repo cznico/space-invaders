@@ -61,6 +61,7 @@ void Game::Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * 
 	for (Bullet &bullet : bullets)
 	{
 		bullet.SetCollisionRadius(15);
+		bullet.enabled = false;
 	}
 
 	ui = UserInterface(maxX, maxY);
