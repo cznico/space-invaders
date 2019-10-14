@@ -70,6 +70,7 @@ namespace SpaceInvaders {
 			void SetGameState(GameState newState);
 			void ResolveGameState();
 
+			double UpdateTime(double time);
 			void ResetTime();
 
 		public:

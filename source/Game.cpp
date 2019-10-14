@@ -316,6 +316,17 @@ void Game::AnimateFiring(double timeDiff)
 	}
 }
 
+double Game::UpdateTime(double elapsedSeconds)
+{
+	double newElapsedTime = elapsedSeconds - startTime;
+	double timeDiff = newElapsedTime - elapsedTime;
+	elapsedTime = newElapsedTime;
+
+	ui.SetAnimationTime(elapsedTime);
+
+	return timeDiff;
+}
+
 void Game::ResetTime()
 {
 	startTime += elapsedTime;
@@ -324,11 +335,7 @@ void Game::ResetTime()
 
 void Game::Tick(double elapsedSeconds)
 {
-	double newElapsedTime = elapsedSeconds - startTime;
-	double timeDiff = newElapsedTime - elapsedTime;
-	elapsedTime = newElapsedTime;
-
-	ui.SetAnimationTime(elapsedTime);
+	double timeDiff = UpdateTime(elapsedSeconds);
 
 	ResolveGameState();
 
@@ -350,6 +357,7 @@ void Game::Tick(double elapsedSeconds)
 		ui.RenderGameOverlay(lives, score, level);
 		break;
 	case GameState::LEVEL_FINISHED:
+		// player is moved to new level immediately
 		break;
 	case GameState::DEAD:
 		ui.RenderDeadScreen(score);
