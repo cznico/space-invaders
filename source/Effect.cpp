@@ -4,7 +4,7 @@ using namespace SpaceInvaders;
 
 float Effect::GetEffectPhase(double time)
 {
-	//if (startTime > time) 0;
+	if (startTime > time) return 0;
 
 	return (time - startTime) / duration;
 }

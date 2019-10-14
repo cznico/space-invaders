@@ -266,7 +266,7 @@ void Game::AnimateGameScreen(double timeDiff)
 
 	AnimateString(to_string(lives) + "x", livesTextOptions);
 
-	DrawSprite(sprites.ship, maxX - 30, maxY - 20, 20, 20, 3.141592 + sin(elapsedTime * 10)*0.1, 0xffffffff);
+	DrawSprite(sprites.ship, maxX - 30, maxY - 20, 20, 20, sin(elapsedTime * 10)*0.1, 0xffffffff);
 
 	ResolveInteractions();
 }
@@ -404,17 +404,20 @@ void Game::AnimateEnemies()
 		{
 			int xo = 0;
 			int yo = min((int)(phase / 1000) * 30, 200); // Descending behaviour
-			int n1 = phase + n * n + n * n*n;
-			int n2 = phase + n + n * n + n * n*n * 3;
+
+			int n1 = phase + n * n + n * n * n;
+			
 			if (((n1 >> 6) & 0x7) == 0x7) // Rotating behaviour
 			{
-				xo += (1 - cos((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
-				yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI))*(20 + ((n*n) % 9));
+				xo += (1 - cos((n1 & 0x7f) / 64.0f * 2.f * PI)) * (20 + ((n * n) % 9));
+				yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI)) * (20 + ((n * n) % 9));
 			}
+
+			int n2 = phase + n + n * n + n * n * n * 3;
 
 			if (((n2 >> 8) & 0xf) == 0xf) // Swooping behaviour
 			{
-				yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI))*(150 + ((n*n) % 9));
+				yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI)) * (150 + ((n * n) % 9));
 			}
 
 			enemy->x = enemy->startPosition.x + xo;
@@ -448,7 +451,7 @@ void Game::AnimateShip(double timeDiff)
 	int speed = timeDiff * 700;
 	ship.MoveHorizontally(IsKeyDown(VK_LEFT) ? -speed : IsKeyDown(VK_RIGHT) ? speed : 0);
 
-	DrawSprite(sprites.ship, ship.x, ship.y, 50, 50, 3.141592 + sin(elapsedTime * 10) * 0.1, 0xffffffff);
+	DrawSprite(sprites.ship, ship.x, ship.y, 50, 50, sin(elapsedTime * 10) * 0.1, 0xffffffff);
 }
 
 void Game::AnimateFiring(double timeDiff)
@@ -466,7 +469,7 @@ void Game::AnimateFiring(double timeDiff)
 	if (IsKeyDown(VK_SPACE) && shotDelay <= 0 && state == GameState::IN_GAME)
 	{
 		bullets[b].x = ship.x;
-		bullets[b].y = ship.y;
+		bullets[b].y = ship.y - 20;
 		bullets[b].enabled = true;
 		b = (b + 1) % 10;
 		shotDelay = .25f; // 250ms rate of fire
@@ -476,9 +479,13 @@ void Game::AnimateFiring(double timeDiff)
 
 	for (int n = 0; n<10; ++n)
 	{
-		if (bullets[n].enabled)
+		Bullet &bullet = bullets[n];
+		if (bullet.enabled)
 		{
-			DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y -= speed, 10, 10, bullets[n].rotation += timeDiff * 15, 0xffffffff);
+			bullet.y -= speed;
+			bullet.rotation += timeDiff * 2;
+
+			DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y, 15, 15, bullets[n].rotation, 0xffffffff);
 		}		
 	}
 }

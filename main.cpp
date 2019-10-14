@@ -21,8 +21,8 @@ void Game()
 
 	SpriteSet sprites;
 	sprites.enemy = LoadSprite("gfx/Little Invader.png");
-	sprites.ship = LoadSprite("gfx/Big Invader.png");
-	sprites.bullet = LoadSprite("gfx/bullet.png");
+	sprites.ship = LoadSprite("gfx/donkey-kong.png");
+	sprites.bullet = LoadSprite("gfx/barrel.png");
 	sprites.explosion = LoadSprite("gfx/explosion.png");
 
 	Leaderboard highscores;
