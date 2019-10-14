@@ -13,6 +13,7 @@ struct FSOUND_SAMPLE;
 // simply call StartFrame and Flip alternately to run the game; StartFrame returns false if the user is trying to quit
 
 bool WantQuit(DWORD clearcolor=0);
+int	GetTimeInMS();
 void Flip(); // flips the screen, frame locked to 60 hz
 void Game(); // you write this :)
 
@@ -38,3 +39,4 @@ FSOUND_SAMPLE *LoadSnd(const char *fname, bool loop=false); // if you set loop t
 int PlaySnd(FSOUND_SAMPLE *sound, float volume=1); // returns a handle which you only need if you are going to call StopSound or ChangeVolume()
 void StopSnd(int handle);
 void ChangeVolume(int handle, float newvolume=1);
+

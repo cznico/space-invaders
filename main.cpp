@@ -2,16 +2,16 @@
 #include <math.h>
 #include <stdio.h>
 #include <string>
-#include <chrono>
 
 #include "source/Game.h"
 #include "source/Leaderboard.h"
+#include "lib/leetlib.h"
 
 using namespace std;
 using namespace SpaceInvaders;
 
 double timeInSeconds() {
-	return (double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) / double(1000000));
+	return GetTimeInMS() / (double)1000;
 }
 
 void Game()
