@@ -62,7 +62,7 @@ void Game::Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * 
 	ui.SetSpriteSet(spriteSet);
 
 	elapsedTime = 0;
-	SetGameState(GameState::LEADERBOARD);
+	SetGameState(GameState::INTRO);
 
 	PlayMusic(audio->music.c_str());
 
@@ -151,7 +151,6 @@ void Game::SetupLevel(int newLevel)
 {
 	lives = 3;
 	level = newLevel;
-	ResetTime();
 
 	for (auto &e : enemies)
 	{
@@ -177,6 +176,7 @@ void Game::SetGameState(GameState newState)
 	switch (newState)
 	{
 	case GameState::IN_GAME_PREPARE:
+		ResetTime();
 		PlaySnd(audio->ready, 0.7);
 		break;
 	case GameState::DEAD:
@@ -264,6 +264,12 @@ void Game::ResolveGameState()
 	if (state == GameState::LEADERBOARD && IsKeyHitSinceLastFlip(VK_RETURN))
 	{
 		ResetGame();
+		SetGameState(GameState::IN_GAME_PREPARE);
+		return;
+	}
+
+	if (state == GameState::INTRO && IsKeyHitSinceLastFlip(VK_RETURN))
+	{
 		SetGameState(GameState::IN_GAME_PREPARE);
 		return;
 	}
@@ -435,6 +441,9 @@ void Game::Tick(double elapsedSeconds)
 
 	switch (state)
 	{
+	case GameState::INTRO:
+		ui.RenderIntroScreen();
+		break;
 	case GameState::PAUSED:
 		AnimateGame(0);
 		ui.RenderGameOverlay(lives, score, level);

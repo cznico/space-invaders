@@ -36,6 +36,57 @@ void UserInterface::AnimateString(string text, const TextOptions &options) const
 	}
 }
 
+void UserInterface::RenderIntroScreen()
+{
+	TextOptions titleTextOptions;
+	titleTextOptions.x = screenWidth / 2;
+	titleTextOptions.y = 50;
+	titleTextOptions.alignment = TextAlignment::CENTER;
+
+	AnimateString("space invaders", titleTextOptions);
+
+	TextOptions youTextOptions;
+	youTextOptions.x = 250;
+	youTextOptions.y = 150;
+	youTextOptions.scale = 0.5;
+
+	AnimateString("you are", youTextOptions);
+	DrawSprite(sprites->ship, screenWidth - 200, 150, 40, 40, sin(animationTime * 10) * 0.1, 0xffffffff);
+
+	TextOptions shootTextOptions;
+	shootTextOptions.x = 250;
+	shootTextOptions.y = 250;
+	shootTextOptions.scale = 0.5;
+
+	AnimateString("shoot at", shootTextOptions);
+	DrawSprite(sprites->enemy, screenWidth - 200, 250 + sin(animationTime * 12) * 3, 30, 30, 0, 0xffffffff);
+
+	TextOptions collectTextOptions;
+	collectTextOptions.x = 250;
+	collectTextOptions.y = 350;
+	collectTextOptions.scale = 0.5;
+
+	AnimateString("collect", collectTextOptions);
+	DrawSprite(sprites->loot, screenWidth - 200, 350 + sin(animationTime * 10) * 3, 20, 20, 0, 0xffffffff);
+
+	TextOptions pauseTextOptions;
+	pauseTextOptions.x = 250;
+	pauseTextOptions.y = 450;
+	pauseTextOptions.scale = 0.5;
+
+	AnimateString("to pause press", pauseTextOptions);
+
+	DrawSprite(sprites->font['p'], screenWidth - 200, 450 + sin(animationTime * 8) * 3, 30, 30, 0, 0xffffffff);
+
+	TextOptions ctaTextOptions;
+	ctaTextOptions.x = screenWidth / 2;
+	ctaTextOptions.y = 550;
+	ctaTextOptions.alignment = TextAlignment::CENTER;
+	ctaTextOptions.scale = 0.75;
+
+	AnimateString("press enter to start", ctaTextOptions);
+}
+
 void UserInterface::RenderDeadScreen(int score)
 {
 	TextOptions deadTextOptions;

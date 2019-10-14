@@ -54,6 +54,8 @@ namespace SpaceInvaders
 		UserInterface(int screenWidth, int screenHeight) : screenHeight(screenHeight), screenWidth(screenWidth) {};
 
 		void AnimateString(string text, const TextOptions &options) const;
+
+		void RenderIntroScreen();
 		void RenderDeadScreen(int score);
 		void RenderHighscoreScreen(string name);
 		void RenderLeaderboardScreen(Leaderboard * leaderboard);

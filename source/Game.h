@@ -24,7 +24,8 @@ namespace SpaceInvaders {
 		LEVEL_FINISHED = 3,
 		DEAD = 4,
 		PAUSED = 5,
-		LEADERBOARD = 6
+		LEADERBOARD = 6,
+		INTRO = 7
 	};
 
 	class Game
