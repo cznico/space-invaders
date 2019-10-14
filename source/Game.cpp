@@ -80,7 +80,7 @@ void Game::CaptureName()
 
 	for (char i = 'a'; i <= 'z'; ++i)
 	{
-		if (IsKeyHitSinceLastFlip(i - 32))
+		if (IsKeyHitSinceLastFlip(i - 32) && playerName.length() < 12)
 		{
 			playerName += i;
 		}
