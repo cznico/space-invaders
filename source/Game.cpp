@@ -5,20 +5,49 @@
 #include "../lib/leetlib.h" // TODO remove dep
 #include "Leaderboard.h"
 
+#include <vector>
+#include <random>
+#include <algorithm>
+#include <iterator>
+
+
 using namespace std;
 using namespace SpaceInvaders;
 
+vector<int> GetRandomVector(int maxNumber, int count)
+{
+	vector<int> result;
+
+	for (int i = 0; i <= maxNumber; i++)
+	{
+		result.push_back(i);
+	}
+
+	random_device rd;
+	mt19937 g(rd());
+
+	shuffle(result.begin(), result.end(), g);
+	result.resize(count);
+
+	return result;
+}
+
 void Game::Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * highscores)
 {
-	for (int n = 0; n < 50; ++n)
+	int invaderSpreadX = 70;
+	int invaderSpreadY = 60;
+	int invadersPerLine = 10;
+	int leftOffset = (maxX - (invaderSpreadX * (invadersPerLine - 1))) / 2;
+
+	for (int n = 0; n < ENEMIES_COUNT; ++n)
 	{
 		Invader * enemy = &enemies[n];
-		enemy->startPosition.x = (n % 10) * 60 + 120;
+		enemy->startPosition.x = (n % invadersPerLine) * invaderSpreadX + leftOffset;
 		enemy->x = enemies[n].startPosition.x;
-		enemy->startPosition.y = (n / 10) * 60 + 70;
+		enemy->startPosition.y = (n / invadersPerLine) * invaderSpreadY + 70;
 		enemy->y = enemies[n].startPosition.y;
-		enemy->SetCollisionRadius(20);
 		enemy->size = 10 + ((n) % 17);
+		enemy->SetCollisionRadius(enemy->size);
 	}
 
 	ship = Ship(60, maxX - 60);
@@ -244,8 +273,8 @@ void Game::ResetLoot()
 {
 	loot.clear();
 
-	int lootValue = 25; // TODO update this according to level
-	int indices[7] = {1, 5, 10, 15, 25, 30, 44}; // TODO generate this randomly
+	int lootValue = 20 + (5 * level);
+	auto indices = GetRandomVector(ENEMIES_COUNT - 1, 5);
 
 	for (int index : indices)
 	{
@@ -270,7 +299,7 @@ void Game::AnimateEnemies()
 {
 	int phase = gameTime * (100 + (level - 1) * 10); // Every level increases enemy speed by 10%
 
-	for (int n = 0; n<50; ++n)
+	for (int n = 0; n < ENEMIES_COUNT; ++n)
 	{
 		Invader * enemy = &enemies[n];
 
@@ -304,7 +333,7 @@ void Game::AnimateEnemies()
 
 void Game::AnimateExplosions()
 {
-	for (int n = 0; n < 50; ++n)
+	for (int n = 0; n < ENEMIES_COUNT; ++n)
 	{
 		Invader * enemy = &enemies[n];
 

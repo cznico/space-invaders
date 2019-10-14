@@ -13,6 +13,8 @@
 using namespace std;
 
 namespace SpaceInvaders {
+	const int ENEMIES_COUNT = 50;
+
 	class Leaderboard;
 
 	enum GameState {
@@ -33,7 +35,7 @@ namespace SpaceInvaders {
 
 			UserInterface ui{0, 0};
 			
-			Invader enemies[50];
+			Invader enemies[ENEMIES_COUNT];
 			Bullet bullets[10];
 			Ship ship{0,0};
 			
