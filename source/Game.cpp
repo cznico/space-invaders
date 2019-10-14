@@ -12,11 +12,13 @@ void Game::Initialize(SpriteSet spriteSet, AudioSet audioSet, Leaderboard * high
 {
 	for (int n = 0; n < 50; ++n)
 	{
-		enemies[n].startPosition.x = (n % 10) * 60 + 120;
-		enemies[n].x = enemies[n].startPosition.x;
-		enemies[n].startPosition.y = (n / 10) * 60 + 70;
-		enemies[n].y = enemies[n].startPosition.y;
-		enemies[n].SetCollisionRadius(20);
+		Invader * enemy = &enemies[n];
+		enemy->startPosition.x = (n % 10) * 60 + 120;
+		enemy->x = enemies[n].startPosition.x;
+		enemy->startPosition.y = (n / 10) * 60 + 70;
+		enemy->y = enemies[n].startPosition.y;
+		enemy->SetCollisionRadius(20);
+		enemy->size = 10 + ((n) % 17);
 	}
 
 	ship = Ship(60, maxX - 60);
@@ -397,7 +399,6 @@ void Game::AnimateEnemies()
 	for (int n = 0; n<50; ++n)
 	{
 		Invader * enemy = &enemies[n];
-		int scale = 10 + ((n) % 17);
 
 		if (enemy->enabled)
 		{
@@ -419,21 +420,11 @@ void Game::AnimateEnemies()
 			enemy->x = enemy->startPosition.x + xo;
 			enemy->y = enemy->startPosition.y + yo;
 
-			DrawSprite(sprites.enemy, enemy->x, enemy->y, scale, scale, 0, 0xffffffff);
-		}
-		else
-		{
-			Effect * explosion = enemy->GetExplosion();
-			float explosionPhase = explosion->GetEffectPhase(gameTime);
-
-			if (explosionPhase < 1.f)
-			{
-				DrawSprite(sprites.explosion, explosion->x, explosion->y, scale + explosionPhase * 30, scale + explosionPhase * 30, gameTime, 0xffffffff);
-			}
-			
+			DrawSprite(sprites.enemy, enemy->x, enemy->y, enemy->size, enemy->size, 0, 0xffffffff);
 		}
 	}
 
+	// Another loop to preserve z-order (explosions > enemies)
 	for (int n = 0; n < 50; ++n)
 	{
 		Invader * enemy = &enemies[n];
@@ -445,8 +436,7 @@ void Game::AnimateEnemies()
 
 			if (explosionPhase < 1.f)
 			{
-				int scale = 10 + ((n) % 17);
-				DrawSprite(sprites.explosion, explosion->x, explosion->y, scale + explosionPhase * 30, scale + explosionPhase * 30, gameTime, 0xffffffff);
+				DrawSprite(sprites.explosion, explosion->x, explosion->y, enemy->size + explosionPhase * 30, enemy->size + explosionPhase * 30, gameTime, 0xffffffff);
 			}
 
 		}

@@ -11,6 +11,7 @@ namespace SpaceInvaders {
 
 	public:
 		Point startPosition;
+		int size = 0;
 		
 	public:
 		void Kill(double time);
