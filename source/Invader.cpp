@@ -2,11 +2,16 @@
 
 using namespace SpaceInvaders;
 
-Invader::Invader()
+void Invader::Kill(double time)
 {
+	explosion.startTime = time;
+	explosion.x = x;
+	explosion.y = y;
+
+	enabled = false;
 }
 
-
-Invader::~Invader()
+Effect * Invader::GetExplosion()
 {
+	return &explosion;
 }

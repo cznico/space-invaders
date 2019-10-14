@@ -56,7 +56,7 @@ void Game::ResolvePlayerHit()
 	{
 		if (invader.IsColliding(&ship))
 		{
-			invader.enabled = false;
+			invader.Kill(gameTime);
 			lives--;
 			PlaySnd(audio.shipHit, 1);
 		}
@@ -70,7 +70,7 @@ void Game::ResolveEnemyHits()
 		for (Bullet &bullet : bullets) {
 			if (invader.IsColliding(&bullet)) {
 				bullet.enabled = false;
-				invader.enabled = false;
+				invader.Kill(gameTime);
 				score += 10 + (level - 1) * 2; // Every level increases score points by 20%
  				PlaySnd(audio.hit, 1);
 			};
@@ -397,6 +397,7 @@ void Game::AnimateEnemies()
 	for (int n = 0; n<50; ++n)
 	{
 		Invader * enemy = &enemies[n];
+		int scale = 10 + ((n) % 17);
 
 		if (enemy->enabled)
 		{
@@ -418,8 +419,37 @@ void Game::AnimateEnemies()
 			enemy->x = enemy->startPosition.x + xo;
 			enemy->y = enemy->startPosition.y + yo;
 
-			DrawSprite(sprites.enemy, enemy->x, enemy->y, (10 + ((n) % 17)), (10 + ((n) % 17)), 0, 0xffffffff);
-		}		
+			DrawSprite(sprites.enemy, enemy->x, enemy->y, scale, scale, 0, 0xffffffff);
+		}
+		else
+		{
+			Effect * explosion = enemy->GetExplosion();
+			float explosionPhase = explosion->GetEffectPhase(gameTime);
+
+			if (explosionPhase < 1.f)
+			{
+				DrawSprite(sprites.explosion, explosion->x, explosion->y, scale + explosionPhase * 30, scale + explosionPhase * 30, gameTime, 0xffffffff);
+			}
+			
+		}
+	}
+
+	for (int n = 0; n < 50; ++n)
+	{
+		Invader * enemy = &enemies[n];
+
+		if (!enemy->enabled)
+		{
+			Effect * explosion = enemy->GetExplosion();
+			float explosionPhase = explosion->GetEffectPhase(gameTime);
+
+			if (explosionPhase < 1.f)
+			{
+				int scale = 10 + ((n) % 17);
+				DrawSprite(sprites.explosion, explosion->x, explosion->y, scale + explosionPhase * 30, scale + explosionPhase * 30, gameTime, 0xffffffff);
+			}
+
+		}
 	}
 }
 

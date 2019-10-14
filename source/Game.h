@@ -40,6 +40,7 @@ namespace SpaceInvaders {
 		IDirect3DTexture9 * enemy;
 		IDirect3DTexture9 * ship;
 		IDirect3DTexture9 * bullet;
+		IDirect3DTexture9 * explosion;
 		map<char, IDirect3DTexture9 *> font;
 	};
 

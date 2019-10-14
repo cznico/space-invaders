@@ -1,14 +1,20 @@
 #pragma once
 #include "SpaceObject.h"
+#include "Effect.h"
 
 namespace SpaceInvaders {
 
 	class Invader : public SpaceObject
 	{
+	protected:
+		Effect explosion;
+
 	public:
 		Point startPosition;
+		
 	public:
-		Invader();
-		~Invader();
+		void Kill(double time);
+		Effect * GetExplosion();
+
 	};
 }
