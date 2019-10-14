@@ -27,6 +27,7 @@ namespace SpaceInvaders
 		IDirect3DTexture9 * ship;
 		IDirect3DTexture9 * bullet;
 		IDirect3DTexture9 * explosion;
+		IDirect3DTexture9 * loot;
 		map<char, IDirect3DTexture9 *> font;
 	};
 
@@ -36,6 +37,7 @@ namespace SpaceInvaders
 		FSOUND_SAMPLE * shipHit;
 		FSOUND_SAMPLE * ready;
 		FSOUND_SAMPLE * dead;
+		FSOUND_SAMPLE * pickup;
 		string music;
 	};
 

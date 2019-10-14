@@ -2,6 +2,7 @@
 #include "Invader.h"
 #include "Bullet.h"
 #include "Ship.h"
+#include "Loot.h"
 #include "UserInterface.h"
 
 #include "../lib/leetlib.h"
@@ -35,6 +36,8 @@ namespace SpaceInvaders {
 			Invader enemies[50];
 			Bullet bullets[10];
 			Ship ship{0,0};
+			
+			map<int, Loot> loot;
 
 			double startTime = 0;
 			double elapsedTime = 0;
@@ -57,10 +60,14 @@ namespace SpaceInvaders {
 			void ResolvePlayerHit();
 
 			void AnimateEnemies();
+			void AnimateExplosions();
+			void AnimateLoot(double timeDiff);
 			void AnimateShip(double timeDiff);
 			void AnimateFiring(double timeDiff);
 
 			void AnimateGame(double timeDiff);
+
+			void ResetLoot();
 
 			void ResolveInteractions();
 

@@ -38,6 +38,8 @@ void Game::Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * 
 	PlayMusic(audio->music.c_str());
 
 	leaderboard = highscores;
+
+	ResetLoot();
 }
 
 void Game::CaptureName()
@@ -67,10 +69,23 @@ void Game::ResolvePlayerHit()
 			PlaySnd(audio->shipHit, 1);
 		}
 	}
+
+	for (auto &lootIt : loot)
+	{
+		auto lootItem = &lootIt.second;
+		if (lootItem->IsColliding(&ship))
+		{
+			lootItem->enabled = false;
+			score += lootItem->value;
+
+			PlaySnd(audio->pickup, 0.5);
+		}
+	}
 }
 
 void Game::ResolveEnemyHits()
 {
+	int n = 0;
 	for (Invader &invader : enemies)
 	{
 		for (Bullet &bullet : bullets) {
@@ -79,9 +94,19 @@ void Game::ResolveEnemyHits()
 				invader.Kill(gameTime);
 				score += 10 + (level - 1) * 2; // Every level increases score points by 20%
  				PlaySnd(audio->hit, 1);
+
+				// Do we need to enable loot drop
+				auto lootIt = loot.find(n);
+				
+				if (lootIt != loot.end()) {
+					lootIt->second.x = invader.x;
+					lootIt->second.y = invader.y;
+					lootIt->second.enabled = true;
+				}
+
 			};
 		}
-
+		n++;
 	}
 }
 
@@ -108,6 +133,8 @@ void Game::SetupLevel(int newLevel)
 	{
 		b.enabled = false;
 	}
+
+	ResetLoot();
 }
 
 void Game::ResetGame()
@@ -147,11 +174,17 @@ void Game::ResolveGameState()
 		}
 		
 		int aliveEnemies = 0;
+		int activeLoot = 0;
+
 		for (auto &e : enemies) {
 			if (e.enabled) aliveEnemies++;
 		}
 
-		if (aliveEnemies == 0)
+		for (auto &l : loot) {
+			if (l.second.enabled) activeLoot++;
+		}
+
+		if (aliveEnemies == 0 && activeLoot == 0)
 		{
 			SetGameState(GameState::LEVEL_FINISHED);
 			return;
@@ -207,12 +240,27 @@ void Game::ResolveGameState()
 	}
 }
 
+void Game::ResetLoot()
+{
+	loot.clear();
+
+	int lootValue = 25; // TODO update this according to level
+	int indices[7] = {1, 5, 10, 15, 25, 30, 44}; // TODO generate this randomly
+
+	for (int index : indices)
+	{
+		loot.emplace(index, Loot(lootValue, index));
+	}
+	
+}
 
 void Game::AnimateGame(double timeDiff)
 {
-	AnimateEnemies();
-	AnimateShip(timeDiff);
+	AnimateEnemies();	
 	AnimateFiring(timeDiff);
+	AnimateShip(timeDiff);
+	AnimateLoot(timeDiff);
+	AnimateExplosions();
 
 	ResolveInteractions();
 }
@@ -252,8 +300,10 @@ void Game::AnimateEnemies()
 			DrawSprite(sprites->enemy, enemy->x, enemy->y, enemy->size, enemy->size, 0, 0xffffffff);
 		}
 	}
+}
 
-	// Another loop to preserve z-order (explosions > enemies)
+void Game::AnimateExplosions()
+{
 	for (int n = 0; n < 50; ++n)
 	{
 		Invader * enemy = &enemies[n];
@@ -269,6 +319,21 @@ void Game::AnimateEnemies()
 			}
 
 		}
+	}
+}
+
+void Game::AnimateLoot(double timeDiff)
+{
+	for (auto &lootIt : loot)
+	{
+		auto lootItem = &lootIt.second;
+		if (!lootItem->enabled) continue;
+ 
+		lootItem->y = lootItem->y + timeDiff * 100;
+
+		if (lootItem->y > maxY) lootItem->enabled = false;
+
+		DrawSprite(sprites->loot, lootItem->x, lootItem->y, 15, 15, 0, 0xffffffff);
 	}
 }
 

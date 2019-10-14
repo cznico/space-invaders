@@ -21,6 +21,7 @@ SpriteSet LoadSpriteSet()
 	sprites.ship = LoadSprite("gfx/donkey-kong.png");
 	sprites.bullet = LoadSprite("gfx/barrel.png");
 	sprites.explosion = LoadSprite("gfx/explosion.png");
+	sprites.loot = LoadSprite("gfx/coin.png");
 
 	Leaderboard highscores;
 
@@ -51,6 +52,7 @@ AudioSet LoadAudioSet()
 	audioSet.ready = LoadSnd("sfx/get-ready.ogg");
 	audioSet.dead = LoadSnd("sfx/game-over.ogg");
 	audioSet.fire = LoadSnd("sfx/fire.ogg");
+	audioSet.pickup = LoadSnd("sfx/pickup.ogg");
 	audioSet.music = "sfx/Automation.mp3";
 
 	return audioSet;
