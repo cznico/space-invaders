@@ -48,22 +48,22 @@ namespace SpaceInvaders
 		int screenHeight;
 		double animationTime;
 
-		SpriteSet * sprites;
+		SpriteSet sprites;
 
 	public:
 		UserInterface(int screenWidth, int screenHeight) : screenHeight(screenHeight), screenWidth(screenWidth) {};
 
 		void AnimateString(string text, const TextOptions &options) const;
 
-		void RenderIntroScreen();
-		void RenderDeadScreen(int score);
-		void RenderHighscoreScreen(string name);
-		void RenderLeaderboardScreen(Leaderboard * leaderboard);
-		void RenderPrepareOverlay(int level);
-		void RenderPausedOverlay();
-		void RenderGameOverlay(int lives, int score, int level);
+		void RenderIntroScreen() const;
+		void RenderDeadScreen(int score) const;
+		void RenderHighscoreScreen(const string &name) const;
+		void RenderLeaderboardScreen(const Leaderboard & leaderboard) const;
+		void RenderPrepareOverlay(int level) const;
+		void RenderPausedOverlay() const;
+		void RenderGameOverlay(int lives, int score, int level) const;
 		
-		void SetSpriteSet(SpriteSet * spriteSet) { sprites = spriteSet; };
+		void SetSpriteSet(const SpriteSet &spriteSet) { sprites = spriteSet; };
 		void SetAnimationTime(double time) { animationTime = time; };
 	};
 }

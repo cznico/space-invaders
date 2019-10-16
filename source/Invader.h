@@ -15,7 +15,7 @@ namespace SpaceInvaders {
 		
 	public:
 		void Kill(double time);
-		Effect * GetExplosion();
+		Effect GetExplosion() const;
 
 	};
 }

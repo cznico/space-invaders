@@ -10,7 +10,7 @@ bool compareLeaderboardItems(LeaderboardItem first, LeaderboardItem second)
 	return first.score > second.score;
 }
 
-void Leaderboard::Load(string name)
+void Leaderboard::LoadFromFile(const string &name)
 {
 	fileName = name;
 
@@ -30,7 +30,7 @@ void Leaderboard::Load(string name)
 	inFile.close();
 }
 
-void Leaderboard::Update(unsigned int score, string name)
+void Leaderboard::Update(unsigned int score, const string &name)
 {
 	LeaderboardItem newItem;
 	newItem.name = name;
@@ -42,7 +42,7 @@ void Leaderboard::Update(unsigned int score, string name)
 	boardItems.resize(count);
 }
 
-bool Leaderboard::HitLeaderboard(unsigned int score)
+bool Leaderboard::HitLeaderboard(unsigned int score) const
 {
 	if (boardItems.size() >= count)
 	{
@@ -51,7 +51,7 @@ bool Leaderboard::HitLeaderboard(unsigned int score)
 	return true;
 }
 
-void Leaderboard::Save()
+void Leaderboard::SaveToFile()
 {
 	ofstream outFile;
 

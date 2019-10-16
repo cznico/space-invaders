@@ -8,7 +8,7 @@ namespace SpaceInvaders {
 			float y;
 
 		public:
-			float Distance(const Point *another) const;
+			float Distance(const Point &another) const;
 	};
 
 }

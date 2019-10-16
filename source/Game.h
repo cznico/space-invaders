@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "Ship.h"
 #include "Loot.h"
+#include "Leaderboard.h"
 #include "UserInterface.h"
 
 #include "../lib/leetlib.h"
@@ -51,9 +52,9 @@ namespace SpaceInvaders {
 			int level = 1;
 			GameState state;
 
-			SpriteSet * sprites;
-			AudioSet * audio;
-			Leaderboard * leaderboard;
+			SpriteSet sprites;
+			AudioSet audio;
+			Leaderboard leaderboard;
 
 			string playerName;
 
@@ -87,6 +88,6 @@ namespace SpaceInvaders {
 			Game(int screenWidth, int screenHeight, double startTime) : maxX(screenWidth), maxY(screenHeight), startTime(startTime) {};
 
 			void Tick(double elapsedSeconds);
-			void Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * leaderboard);
+			void Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, const Leaderboard &leaderboard);
 	};
 }

@@ -12,7 +12,7 @@ namespace SpaceInvaders
 		bool enabled = true;
 	
 		void SetCollisionRadius(float newRadius) { collisionRadius = newRadius; };
-		bool IsColliding(const SpaceObject * another) const;
+		bool IsColliding(const SpaceObject &another) const;
 	};
 
 }

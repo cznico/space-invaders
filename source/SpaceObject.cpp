@@ -2,9 +2,9 @@
 
 using namespace SpaceInvaders;
 
-bool SpaceObject::IsColliding(const SpaceObject * another) const
+bool SpaceObject::IsColliding(const SpaceObject &another) const
 {
-	if (!enabled || !another->enabled) return false;
+	if (!enabled || !another.enabled) return false;
 
-	return Distance(another) < collisionRadius + another->collisionRadius;
+	return Distance(another) < collisionRadius + another.collisionRadius;
 }

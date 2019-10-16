@@ -9,10 +9,10 @@ namespace SpaceInvaders {
 		int maxLeft;
 		int maxRight;
 
-		public:
-			Ship(int maxLeft, int maxRight) : maxLeft(maxLeft), maxRight(maxRight) { SpaceObject(); };
+	public:
+		Ship(int maxLeft, int maxRight) : maxLeft(maxLeft), maxRight(maxRight) { SpaceObject(); };
 
-			void MoveHorizontally(int offset);
+		void MoveHorizontally(int offset);
 	};
 
 }

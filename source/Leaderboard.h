@@ -40,15 +40,15 @@ namespace SpaceInvaders
 		Leaderboard() {};
 		Leaderboard(unsigned int count) : count(count) {};
 
-		void Load(string name);
+		void LoadFromFile(const string &name);
 
-		void Update(unsigned int score, string name);
+		void Update(unsigned int score, const string &name);
 
-		bool HitLeaderboard(unsigned int score);
+		bool HitLeaderboard(unsigned int score) const;
 
-		void Save();
+		void SaveToFile();
 
-		const vector<LeaderboardItem>* getItems() { return &boardItems; }
+		const vector<LeaderboardItem> GetItems() const { return boardItems; }
 	};
 
 

@@ -23,10 +23,6 @@ SpriteSet LoadSpriteSet()
 	sprites.explosion = LoadSprite("gfx/explosion.png");
 	sprites.loot = LoadSprite("gfx/coin.png");
 
-	Leaderboard highscores;
-
-	highscores.Load("leaderboard.txt");
-
 	for (char i = 'a'; i <= 'z'; ++i) {
 		string fileName = "gfx/";
 		fileName = fileName + i;
@@ -68,9 +64,9 @@ void Game()
 	
 	Leaderboard highscores;
 
-	highscores.Load("leaderboard.txt");
+	highscores.LoadFromFile("leaderboard.txt");
 
-	game.Initialize(&spriteSet, &audioSet, &highscores);
+	game.Initialize(spriteSet, audioSet, highscores);
 
 	while (!WantQuit() && !IsKeyDown(VK_ESCAPE))
 	{

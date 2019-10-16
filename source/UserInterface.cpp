@@ -10,8 +10,6 @@ using namespace std;
 
 void UserInterface::AnimateString(string text, const TextOptions &options) const
 {
-	if (sprites == nullptr) return;
-
 	int posIndex = 0;
 	int letterSize = 20 * options.scale;
 	int letterSpacing = 2 * letterSize;
@@ -30,13 +28,13 @@ void UserInterface::AnimateString(string text, const TextOptions &options) const
 	float phase = sin(animationTime * 10);
 
 	for (char &ch : text) {
-		auto spriteIt = sprites->font.find(ch);
-		if (spriteIt != sprites->font.end()) DrawSprite(spriteIt->second, posIndex * letterSpacing + options.x + alignmentOffset, options.y, letterSize, letterSize, phase * posIndex * 0.01);
+		auto spriteIt = sprites.font.find(ch);
+		if (spriteIt != sprites.font.end()) DrawSprite(spriteIt->second, posIndex * letterSpacing + options.x + alignmentOffset, options.y, letterSize, letterSize, phase * posIndex * 0.01);
 		posIndex++;
 	}
 }
 
-void UserInterface::RenderIntroScreen()
+void UserInterface::RenderIntroScreen() const
 {
 	TextOptions titleTextOptions;
 	titleTextOptions.x = screenWidth / 2;
@@ -51,7 +49,10 @@ void UserInterface::RenderIntroScreen()
 	youTextOptions.scale = 0.5;
 
 	AnimateString("you are", youTextOptions);
-	DrawSprite(sprites->ship, screenWidth - 200, 150, 40, 40, sin(animationTime * 10) * 0.1, 0xffffffff);
+	if (sprites.ship != nullptr)
+	{
+		DrawSprite(sprites.ship, screenWidth - 200, 150, 40, 40, sin(animationTime * 10) * 0.1, 0xffffffff);
+	}
 
 	TextOptions shootTextOptions;
 	shootTextOptions.x = 250;
@@ -59,7 +60,10 @@ void UserInterface::RenderIntroScreen()
 	shootTextOptions.scale = 0.5;
 
 	AnimateString("shoot at", shootTextOptions);
-	DrawSprite(sprites->enemy, screenWidth - 200, 250 + sin(animationTime * 12) * 3, 30, 30, 0, 0xffffffff);
+	if (sprites.enemy != nullptr)
+	{
+		DrawSprite(sprites.enemy, screenWidth - 200, 250 + sin(animationTime * 12) * 3, 30, 30, 0, 0xffffffff);
+	}
 
 	TextOptions collectTextOptions;
 	collectTextOptions.x = 250;
@@ -67,7 +71,11 @@ void UserInterface::RenderIntroScreen()
 	collectTextOptions.scale = 0.5;
 
 	AnimateString("collect", collectTextOptions);
-	DrawSprite(sprites->loot, screenWidth - 200, 350 + sin(animationTime * 10) * 3, 20, 20, 0, 0xffffffff);
+
+	if (sprites.loot != nullptr)
+	{
+		DrawSprite(sprites.loot, screenWidth - 200, 350 + sin(animationTime * 10) * 3, 20, 20, 0, 0xffffffff);
+	}
 
 	TextOptions pauseTextOptions;
 	pauseTextOptions.x = 250;
@@ -76,7 +84,7 @@ void UserInterface::RenderIntroScreen()
 
 	AnimateString("to pause press", pauseTextOptions);
 
-	DrawSprite(sprites->font['p'], screenWidth - 200, 450 + sin(animationTime * 8) * 3, 30, 30, 0, 0xffffffff);
+	DrawSprite(sprites.font.at('p'), screenWidth - 200, 450 + sin(animationTime * 8) * 3, 30, 30, 0, 0xffffffff);
 
 	TextOptions ctaTextOptions;
 	ctaTextOptions.x = screenWidth / 2;
@@ -87,7 +95,7 @@ void UserInterface::RenderIntroScreen()
 	AnimateString("press enter to start", ctaTextOptions);
 }
 
-void UserInterface::RenderDeadScreen(int score)
+void UserInterface::RenderDeadScreen(int score) const
 {
 	TextOptions deadTextOptions;
 	deadTextOptions.x = screenWidth / 2;
@@ -113,7 +121,7 @@ void UserInterface::RenderDeadScreen(int score)
 	AnimateString("press enter to start again", ctaTextOptions);
 }
 
-void UserInterface::RenderHighscoreScreen(string name)
+void UserInterface::RenderHighscoreScreen(const string &name) const
 {
 	TextOptions highscoreTextOptions;
 	highscoreTextOptions.x = screenWidth / 2;
@@ -140,7 +148,7 @@ void UserInterface::RenderHighscoreScreen(string name)
 
 }
 
-void UserInterface::RenderLeaderboardScreen(Leaderboard * leaderboard)
+void UserInterface::RenderLeaderboardScreen(const Leaderboard &leaderboard) const
 {
 	int row = 150;
 
@@ -151,7 +159,7 @@ void UserInterface::RenderLeaderboardScreen(Leaderboard * leaderboard)
 
 	AnimateString("leaderboard", headlineTextOptions);
 
-	for (auto item : (*leaderboard->getItems()))
+	for (LeaderboardItem item : leaderboard.GetItems())
 	{
 		TextOptions nameTextOptions;
 		nameTextOptions.x = 100;
@@ -180,7 +188,7 @@ void UserInterface::RenderLeaderboardScreen(Leaderboard * leaderboard)
 	AnimateString("press enter to continue", ctaTextOptions);
 }
 
-void UserInterface::RenderPrepareOverlay(int level)
+void UserInterface::RenderPrepareOverlay(int level) const
 {
 	TextOptions levelTextOptions;
 	levelTextOptions.x = screenWidth / 2;
@@ -198,7 +206,7 @@ void UserInterface::RenderPrepareOverlay(int level)
 	AnimateString("get ready", prepareTextOptions);
 }
 
-void UserInterface::RenderPausedOverlay()
+void UserInterface::RenderPausedOverlay() const
 {
 	TextOptions pauseTextOptions;
 	pauseTextOptions.x = screenWidth / 2;
@@ -209,7 +217,7 @@ void UserInterface::RenderPausedOverlay()
 	AnimateString("pause", pauseTextOptions);
 }
 
-void UserInterface::RenderGameOverlay(int lives, int score, int level)
+void UserInterface::RenderGameOverlay(int lives, int score, int level) const
 {
 	TextOptions headlineTextOptions;
 	headlineTextOptions.x = screenWidth / 2;
@@ -239,5 +247,8 @@ void UserInterface::RenderGameOverlay(int lives, int score, int level)
 
 	AnimateString(to_string(lives) + "x", livesTextOptions);
 
-	DrawSprite(sprites->ship, screenWidth - 30, screenHeight - 20, 20, 20, sin(animationTime * 10)*0.1, 0xffffffff);
+	if (sprites.ship != nullptr)
+	{
+		DrawSprite(sprites.ship, screenWidth - 30, screenHeight - 20, 20, 20, sin(animationTime * 10)*0.1, 0xffffffff);
+	}
 }

@@ -11,7 +11,7 @@ void Invader::Kill(double time)
 	enabled = false;
 }
 
-Effect * Invader::GetExplosion()
+Effect Invader::GetExplosion() const
 {
-	return &explosion;
+	return explosion;
 }

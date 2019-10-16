@@ -32,7 +32,7 @@ vector<int> GetRandomVector(int maxNumber, int count)
 	return result;
 }
 
-void Game::Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * highscores)
+void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, const Leaderboard &highscores)
 {
 	int invaderSpreadX = 70;
 	int invaderSpreadY = 60;
@@ -41,13 +41,13 @@ void Game::Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * 
 
 	for (int n = 0; n < ENEMIES_COUNT; ++n)
 	{
-		Invader * enemy = &enemies[n];
-		enemy->startPosition.x = (n % invadersPerLine) * invaderSpreadX + leftOffset;
-		enemy->x = enemies[n].startPosition.x;
-		enemy->startPosition.y = (n / invadersPerLine) * invaderSpreadY + 70;
-		enemy->y = enemies[n].startPosition.y;
-		enemy->size = 10 + ((n) % 17);
-		enemy->SetCollisionRadius(enemy->size);
+		Invader &enemy = enemies[n];
+		enemy.startPosition.x = (n % invadersPerLine) * invaderSpreadX + leftOffset;
+		enemy.x = enemies[n].startPosition.x;
+		enemy.startPosition.y = (n / invadersPerLine) * invaderSpreadY + 70;
+		enemy.y = enemies[n].startPosition.y;
+		enemy.size = 10 + ((n) % 17);
+		enemy.SetCollisionRadius(enemy.size);
 	}
 
 	ship = Ship(60, maxX - 60);
@@ -70,7 +70,7 @@ void Game::Initialize(SpriteSet * spriteSet, AudioSet * audioSet, Leaderboard * 
 	elapsedTime = 0;
 	SetGameState(GameState::INTRO);
 
-	PlayMusic(audio->music.c_str());
+	PlayMusic(audio.music.c_str());
 
 	leaderboard = highscores;
 
@@ -97,23 +97,30 @@ void Game::ResolvePlayerHit()
 {
 	for (Invader &invader : enemies)
 	{
-		if (invader.IsColliding(&ship))
+		if (invader.IsColliding(ship))
 		{
 			invader.Kill(gameTime);
 			lives--;
-			PlaySnd(audio->shipHit, 1);
+			if (audio.shipHit != nullptr)
+			{
+				PlaySnd(audio.shipHit, 1);
+			}
+			
 		}
 	}
 
 	for (auto &lootIt : loot)
 	{
 		auto lootItem = &lootIt.second;
-		if (lootItem->IsColliding(&ship))
+		if (lootItem->IsColliding(ship))
 		{
 			lootItem->enabled = false;
 			score += lootItem->value;
 
-			PlaySnd(audio->pickup, 0.5);
+			if (audio.pickup != nullptr)
+			{
+				PlaySnd(audio.pickup, 0.5);
+			}
 		}
 	}
 }
@@ -124,11 +131,15 @@ void Game::ResolveEnemyHits()
 	for (Invader &invader : enemies)
 	{
 		for (Bullet &bullet : bullets) {
-			if (invader.IsColliding(&bullet)) {
+			if (invader.IsColliding(bullet)) {
 				bullet.enabled = false;
 				invader.Kill(gameTime);
 				score += 10 + (level - 1) * 2; // Every level increases score points by 20%
- 				PlaySnd(audio->hit, 1);
+				
+				if (audio.hit != nullptr)
+				{
+					PlaySnd(audio.hit, 1);
+				}
 
 				// Do we need to enable loot drop
 				auto lootIt = loot.find(n);
@@ -183,10 +194,17 @@ void Game::SetGameState(GameState newState)
 	{
 	case GameState::IN_GAME_PREPARE:
 		ResetTime();
-		PlaySnd(audio->ready, 0.7);
+
+		if (audio.ready != nullptr)
+		{
+			PlaySnd(audio.ready, 0.7);
+		}		
 		break;
 	case GameState::DEAD:
-		PlaySnd(audio->dead, 0.7);
+		if (audio.dead != nullptr)
+		{
+			PlaySnd(audio.dead, 0.7);
+		}
 		break;
 	}
 
@@ -199,7 +217,7 @@ void Game::ResolveGameState()
 	{
 		if (lives <= 0)
 		{
-			if (leaderboard->HitLeaderboard(score))
+			if (leaderboard.HitLeaderboard(score))
 			{
 				SetGameState(GameState::HIGHSCORED);
 				return;
@@ -260,8 +278,8 @@ void Game::ResolveGameState()
 
 	if (state == GameState::HIGHSCORED && IsKeyHitSinceLastFlip(VK_RETURN))
 	{
-		leaderboard->Update(score, playerName);
-		leaderboard->Save();
+		leaderboard.Update(score, playerName);
+		leaderboard.SaveToFile();
 
 		SetGameState(GameState::LEADERBOARD);
 		return;
@@ -313,9 +331,9 @@ void Game::AnimateEnemies()
 
 	for (int n = 0; n < ENEMIES_COUNT; ++n)
 	{
-		Invader * enemy = &enemies[n];
+		Invader &enemy = enemies[n];
 
-		if (enemy->enabled)
+		if (enemy.enabled)
 		{
 			int xo = 0;
 			int yo = min((int)(phase / 1000) * 30, 200); // Descending behaviour
@@ -335,10 +353,14 @@ void Game::AnimateEnemies()
 				yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI)) * (150 + ((n * n) % 9));
 			}
 
-			enemy->x = enemy->startPosition.x + xo;
-			enemy->y = enemy->startPosition.y + yo;
+			enemy.x = enemy.startPosition.x + xo;
+			enemy.y = enemy.startPosition.y + yo;
 
-			DrawSprite(sprites->enemy, enemy->x, enemy->y, enemy->size, enemy->size, 0, 0xffffffff);
+			if (sprites.enemy != nullptr)
+			{
+				DrawSprite(sprites.enemy, enemy.x, enemy.y, enemy.size, enemy.size, 0, 0xffffffff);
+			}
+			
 		}
 	}
 }
@@ -347,16 +369,16 @@ void Game::AnimateExplosions()
 {
 	for (int n = 0; n < ENEMIES_COUNT; ++n)
 	{
-		Invader * enemy = &enemies[n];
+		Invader &enemy = enemies[n];
 
-		if (!enemy->enabled)
+		if (!enemy.enabled)
 		{
-			Effect * explosion = enemy->GetExplosion();
-			float explosionPhase = explosion->GetEffectPhase(gameTime);
+			Effect explosion = enemy.GetExplosion();
+			float explosionPhase = explosion.GetEffectPhase(gameTime);
 
-			if (explosionPhase < 1.f)
+			if (sprites.explosion != nullptr && explosionPhase < 1.f)
 			{
-				DrawSprite(sprites->explosion, explosion->x, explosion->y, enemy->size + explosionPhase * 30, enemy->size + explosionPhase * 30, gameTime, 0xffffffff);
+				DrawSprite(sprites.explosion, explosion.x, explosion.y, enemy.size + explosionPhase * 30, enemy.size + explosionPhase * 30, gameTime, 0xffffffff);
 			}
 
 		}
@@ -374,7 +396,10 @@ void Game::AnimateLoot(double timeDiff)
 
 		if (lootItem->y > maxY) lootItem->enabled = false;
 
-		DrawSprite(sprites->loot, lootItem->x, lootItem->y, 15, 15, 0, 0xffffffff);
+		if (sprites.loot != nullptr)
+		{
+			DrawSprite(sprites.loot, lootItem->x, lootItem->y, 15, 15, 0, 0xffffffff);
+		}
 	}
 }
 
@@ -383,7 +408,10 @@ void Game::AnimateShip(double timeDiff)
 	int speed = timeDiff * 700;
 	ship.MoveHorizontally(IsKeyDown(VK_LEFT) ? -speed : IsKeyDown(VK_RIGHT) ? speed : 0);
 
-	DrawSprite(sprites->ship, ship.x, ship.y, 50, 50, sin(elapsedTime * 10) * 0.1, 0xffffffff);
+	if (sprites.ship != nullptr)
+	{
+		DrawSprite(sprites.ship, ship.x, ship.y, 50, 50, sin(elapsedTime * 10) * 0.1, 0xffffffff);
+	}	
 }
 
 void Game::AnimateFiring(double timeDiff)
@@ -406,7 +434,10 @@ void Game::AnimateFiring(double timeDiff)
 		b = (b + 1) % 10;
 		shotDelay = .25f; // 250ms rate of fire
 
-		PlaySnd(audio->fire, 0.5);
+		if (audio.fire != nullptr)
+		{
+			PlaySnd(audio.fire, 0.5);
+		}		
 	}
 
 	for (int n = 0; n<10; ++n)
@@ -417,7 +448,10 @@ void Game::AnimateFiring(double timeDiff)
 			bullet.y -= speed;
 			bullet.rotation += timeDiff * 2;
 
-			DrawSprite(sprites->bullet, bullets[n].x, bullets[n].y, 15, 15, bullets[n].rotation, 0xffffffff);
+			if (sprites.bullet != nullptr)
+			{
+				DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y, 15, 15, bullets[n].rotation, 0xffffffff);
+			}
 		}		
 	}
 }
