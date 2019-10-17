@@ -6,16 +6,9 @@ namespace SpaceInvaders {
 
 	class Invader : public SpaceObject
 	{
-	protected:
-		Effect explosion;
 
 	public:
 		Point startPosition;
 		int size = 0;
-		
-	public:
-		void Kill(double time);
-		Effect GetExplosion() const;
-
 	};
 }

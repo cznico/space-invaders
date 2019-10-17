@@ -38,14 +38,16 @@ namespace SpaceInvaders {
 			UserInterface ui{0, 0};
 			
 			Invader enemies[ENEMIES_COUNT];
-			Bullet bullets[10];
 			Ship ship{0,0};
 			
+			map<int, Bullet> bullets;
 			map<int, Loot> loot;
+			map<int, Effect> explosions;
 
 			double startTime = 0;
 			double elapsedTime = 0;
 			double gameTime = 0;
+			double shotDelay = 0;
 
 			int score = 0;
 			int lives = 3;
@@ -63,6 +65,9 @@ namespace SpaceInvaders {
 			void ResolveEnemyHits();
 			void ResolvePlayerHit();
 
+			void ResolveUserInput(float timeDiff);
+			void ResolveInteractions();
+
 			void AnimateEnemies();
 			void AnimateExplosions();
 			void AnimateLoot(double timeDiff);
@@ -72,8 +77,6 @@ namespace SpaceInvaders {
 			void AnimateGame(double timeDiff);
 
 			void ResetLoot();
-
-			void ResolveInteractions();
 
 			void SetupLevel(int newLevel);
 			void ResetGame();

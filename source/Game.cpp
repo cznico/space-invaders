@@ -60,13 +60,6 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 	ship.SetCollisionRadius(40);	
 	ship.SetupDrawProps(sprites.ship, 50);
 
-	for (Bullet &bullet : bullets)
-	{
-		bullet.SetCollisionRadius(15);
-		bullet.SetupDrawProps(sprites.bullet, 15);
-		bullet.enabled = false;
-	}
-
 	ui = UserInterface(maxX, maxY);
 	ui.SetSpriteSet(spriteSet);
 
@@ -102,7 +95,7 @@ void Game::ResolvePlayerHit()
 	{
 		if (invader.IsColliding(ship))
 		{
-			invader.Kill(gameTime);
+			invader.enabled = false;
 			lives--;
 			if (audio.shipHit != nullptr)
 			{
@@ -133,10 +126,16 @@ void Game::ResolveEnemyHits()
 	int n = 0;
 	for (Invader &invader : enemies)
 	{
-		for (Bullet &bullet : bullets) {
-			if (invader.IsColliding(bullet)) {
-				bullet.enabled = false;
-				invader.Kill(gameTime);
+		for (auto &bulletIt : bullets) {
+			if (invader.IsColliding(bulletIt.second)) {
+				bulletIt.second.enabled = false;
+				invader.enabled = false;
+
+				Effect explosion = Effect::CreateEffect(invader, gameTime);
+				explosion.SetupDrawProps(sprites.explosion, invader.size);
+
+				explosions.emplace(n, explosion);
+
 				score += 10 + (level - 1) * 2; // Every level increases score points by 20%
 				
 				if (audio.hit != nullptr)
@@ -167,6 +166,34 @@ void Game::ResolveInteractions()
 	ResolveEnemyHits();
 }
 
+void Game::ResolveUserInput(float timeDiff)
+{
+	// Bullet spawning
+	if (shotDelay > 0)
+	{
+		shotDelay -= timeDiff;
+	}
+	if (!IsKeyDown(VK_SPACE)) shotDelay = 0;
+	if (IsKeyDown(VK_SPACE) && shotDelay <= 0 && state == GameState::IN_GAME)
+	{
+		Bullet bullet = Bullet::CreateBullet(ship);
+		bullet.SetCollisionRadius(15);
+		bullet.SetupDrawProps(sprites.bullet, 15);
+
+		bullets.emplace(Bullet::ShotsCount++, bullet);
+		shotDelay = .25f; // 250ms rate of fire
+
+		if (audio.fire != nullptr)
+		{
+			PlaySnd(audio.fire, 0.5);
+		}
+	}
+
+	// Ship movement
+	int speed = timeDiff * 700;
+	ship.MoveHorizontally(IsKeyDown(VK_LEFT) ? -speed : IsKeyDown(VK_RIGHT) ? speed : 0);
+}
+
 void Game::SetupLevel(int newLevel)
 {
 	lives = 3;
@@ -177,12 +204,9 @@ void Game::SetupLevel(int newLevel)
 		e.enabled = true;
 	}
 
-	for (auto &b : bullets)
-	{
-		b.enabled = false;
-	}
-
 	ResetLoot();
+	explosions.clear();
+	bullets.clear();
 }
 
 void Game::ResetGame()
@@ -322,6 +346,8 @@ void Game::ResetLoot()
 
 void Game::AnimateGame(double timeDiff)
 {
+	ResolveUserInput(timeDiff);
+
 	AnimateEnemies();	
 	AnimateFiring(timeDiff);
 	AnimateShip(timeDiff);
@@ -330,7 +356,6 @@ void Game::AnimateGame(double timeDiff)
 
 	ResolveInteractions();
 }
-
 
 void Game::AnimateEnemies()
 {
@@ -376,20 +401,13 @@ void Game::AnimateEnemies()
 
 void Game::AnimateExplosions()
 {
-	for (int n = 0; n < ENEMIES_COUNT; ++n)
+	for (auto &explosionIt : explosions)
 	{
-		Invader &enemy = enemies[n];
+		explosionIt.second.Draw(gameTime);
 
-		if (!enemy.enabled)
+		if (!explosionIt.second.enabled)
 		{
-			Effect explosion = enemy.GetExplosion();
-			float explosionPhase = explosion.GetEffectPhase(gameTime);
-
-			if (sprites.explosion != nullptr && explosionPhase < 1.f)
-			{
-				DrawSprite(sprites.explosion, explosion.x, explosion.y, enemy.size + explosionPhase * 30, enemy.size + explosionPhase * 30, gameTime, 0xffffffff);
-			}
-
+			explosions.erase(explosionIt.first);
 		}
 	}
 }
@@ -411,51 +429,28 @@ void Game::AnimateLoot(double timeDiff)
 
 void Game::AnimateShip(double timeDiff)
 {
-	int speed = timeDiff * 700;
-	ship.MoveHorizontally(IsKeyDown(VK_LEFT) ? -speed : IsKeyDown(VK_RIGHT) ? speed : 0);
-
 	ship.Draw(elapsedTime);
 }
 
 void Game::AnimateFiring(double timeDiff)
 {
-	static int b = 0; // TODO move this to class/object space
-	static double shotDelay = 0;  // TODO move this to class/object space
-
 	int speed = timeDiff * 400;
 
-	if (shotDelay > 0)
+	// Bullet animation
+	for (auto &bulletIt : bullets)
 	{
-		shotDelay -= timeDiff;
-	}
-	if (!IsKeyDown(VK_SPACE)) shotDelay = 0;
-	if (IsKeyDown(VK_SPACE) && shotDelay <= 0 && state == GameState::IN_GAME)
-	{
-		bullets[b].x = ship.x;
-		bullets[b].y = ship.y - 20;
-		bullets[b].enabled = true;
-		b = (b + 1) % 10;
-		shotDelay = .25f; // 250ms rate of fire
+		Bullet &bullet = bulletIt.second;
 
-		if (audio.fire != nullptr)
+		bullet.y -= speed;
+		bullet.enabled = bullet.enabled && bullet.y > 0;
+		bullet.rotation += timeDiff * 2;
+
+		bullet.Draw(gameTime);
+
+		if (!bullet.enabled)
 		{
-			PlaySnd(audio.fire, 0.5);
-		}		
-	}
-
-	for (int n = 0; n<10; ++n)
-	{
-		Bullet &bullet = bullets[n];
-		if (bullet.enabled)
-		{
-			bullet.y -= speed;
-			bullet.rotation += timeDiff * 2;
-
-			if (sprites.bullet != nullptr)
-			{
-				bullets[n].Draw(elapsedTime);
-			}
-		}		
+			bullets.erase(bulletIt.first);
+		}
 	}
 }
 

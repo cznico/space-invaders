@@ -19,7 +19,7 @@ void SpaceObject::SetupDrawProps(IDirect3DTexture9 * spriteToSet, float size)
 	drawSize = size;
 };
 
-void SpaceObject::Draw(double animationTime) const
+void SpaceObject::Draw(double animationTime)
 {
 	if (sprite == nullptr) return;
 

@@ -20,7 +20,7 @@ namespace SpaceInvaders
 		void SetupDrawProps(IDirect3DTexture9 * spriteToSet, float size);
 		bool IsColliding(const SpaceObject &another) const;
 
-		virtual void Draw(double animationTime) const;
+		virtual void Draw(double animationTime);
 	};
 
 }

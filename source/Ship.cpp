@@ -11,7 +11,7 @@ void Ship::MoveHorizontally(int offset)
 	x = fmin(x, maxRight);
 }
 
-void Ship::Draw(double animationTime) const
+void Ship::Draw(double animationTime)
 {
 	DrawSprite(sprite, x, y, drawSize, drawSize, sin(animationTime * 10) * 0.1, 0xffffffff);
 }

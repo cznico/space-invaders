@@ -14,7 +14,7 @@ namespace SpaceInvaders {
 
 		void MoveHorizontally(int offset);
 
-		void Draw(double animationTime) const override;
+		void Draw(double animationTime) override;
 	};
 
 }
