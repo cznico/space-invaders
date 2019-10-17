@@ -349,15 +349,21 @@ void Game::AnimateEnemies()
 			
 			if (((n1 >> 6) & 0x7) == 0x7) // Rotating behaviour
 			{
-				xo += (1 - cos((n1 & 0x7f) / 64.0f * 2.f * PI)) * (20 + ((n * n) % 9));
-				yo += (sin((n1 & 0x7f) / 64.0f * 2.f * PI)) * (20 + ((n * n) % 9));
+				auto rotationRadius = 20 + ((n * n) % 9);
+				auto rotationPhase = (n1 & 0x7f) / 64.0f * 2.f * PI;
+
+				xo += (1 - cos(rotationPhase)) * rotationRadius;
+				yo += sin(rotationPhase) * rotationRadius;
 			}
 
 			int n2 = phase + n + n * n + n * n * n * 3;
 
 			if (((n2 >> 8) & 0xf) == 0xf) // Swooping behaviour
 			{
-				yo += (1 - cos((n2 & 0xff) / 256.0f * 2.f * PI)) * (150 + ((n * n) % 9));
+				auto swoopingDistance = 150 + ((n * n) % 9);
+				auto swoopingPhase = (n2 & 0xff) / 256.0f * 2.f * PI;
+
+				yo += (1 - cos(swoopingPhase)) * swoopingDistance;
 			}
 
 			enemy.x = enemy.startPosition.x + xo;
