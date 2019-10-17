@@ -90,12 +90,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\Effect.cpp" />
+    <ClCompile Include="source\Explosion.cpp" />
     <ClCompile Include="source\Leaderboard.cpp" />
     <ClCompile Include="source\Invader.cpp" />
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="lib\leetlib.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="source\Loot.cpp" />
     <ClCompile Include="source\Point.cpp" />
     <ClCompile Include="source\Ship.cpp" />
     <ClCompile Include="source\Bullet.cpp" />
@@ -103,11 +104,12 @@
     <ClCompile Include="source\UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\Effect.h" />
+    <ClInclude Include="source\Explosion.h" />
     <ClInclude Include="source\Leaderboard.h" />
     <ClInclude Include="source\Invader.h" />
     <ClInclude Include="source\Game.h" />
     <ClInclude Include="lib\leetlib.h" />
+    <ClInclude Include="source\Loot.h" />
     <ClInclude Include="source\Point.h" />
     <ClInclude Include="source\Ship.h" />
     <ClInclude Include="source\Bullet.h" />

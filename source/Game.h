@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "Ship.h"
 #include "Loot.h"
+#include "Explosion.h"
 #include "Leaderboard.h"
 #include "UserInterface.h"
 
@@ -42,7 +43,7 @@ namespace SpaceInvaders {
 			
 			map<int, Bullet> bullets;
 			map<int, Loot> loot;
-			map<int, Effect> explosions;
+			map<int, Explosion> explosions;
 
 			double startTime = 0;
 			double elapsedTime = 0;

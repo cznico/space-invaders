@@ -131,7 +131,7 @@ void Game::ResolveEnemyHits()
 				bulletIt.second.enabled = false;
 				invader.enabled = false;
 
-				Effect explosion = Effect::CreateEffect(invader, gameTime);
+				Explosion explosion = Explosion::CreateEffect(invader, gameTime);
 				explosion.SetupDrawProps(sprites.explosion, invader.size + 10);
 
 				explosions.emplace(n, explosion);

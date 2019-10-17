@@ -40,10 +40,13 @@
     <ClCompile Include="source\Leaderboard.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\Effect.cpp">
+    <ClCompile Include="source\UserInterface.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\UserInterface.cpp">
+    <ClCompile Include="source\Loot.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Explosion.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -72,10 +75,13 @@
     <ClInclude Include="source\Leaderboard.h">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\Effect.h">
+    <ClInclude Include="source\UserInterface.h">
       <Filter>source</Filter>
     </ClInclude>
-    <ClInclude Include="source\UserInterface.h">
+    <ClInclude Include="source\Loot.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Explosion.h">
       <Filter>source</Filter>
     </ClInclude>
   </ItemGroup>

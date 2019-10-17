@@ -1,6 +1,5 @@
 #pragma once
 #include "SpaceObject.h"
-#include "Effect.h"
 
 namespace SpaceInvaders {
 
