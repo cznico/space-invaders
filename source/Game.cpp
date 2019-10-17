@@ -132,7 +132,7 @@ void Game::ResolveEnemyHits()
 				invader.enabled = false;
 
 				Effect explosion = Effect::CreateEffect(invader, gameTime);
-				explosion.SetupDrawProps(sprites.explosion, invader.size);
+				explosion.SetupDrawProps(sprites.explosion, invader.size + 10);
 
 				explosions.emplace(n, explosion);
 

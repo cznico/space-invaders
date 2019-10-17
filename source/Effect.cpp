@@ -28,7 +28,8 @@ void Effect::Draw(double animationTime)
 	}
 	else
 	{
-		DrawSprite(sprite, x, y, drawSize + phase * 30, drawSize + phase * 30, animationTime, 0xffffffff);
+		auto color = 0x00ffffff | (byte((1 - phase) * 255) * 0x01000000); // 2 most-left hexa positions are alpha channel
+		DrawSprite(sprite, x, y, drawSize + phase * 20, drawSize + phase * 20, animationTime, color);
 	}
 }
 
