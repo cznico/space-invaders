@@ -23,21 +23,21 @@ namespace SpaceInvaders
 	};
 
 	struct SpriteSet {
-		IDirect3DTexture9 * enemy;
-		IDirect3DTexture9 * ship;
-		IDirect3DTexture9 * bullet;
-		IDirect3DTexture9 * explosion;
-		IDirect3DTexture9 * loot;
+		IDirect3DTexture9 * enemy = nullptr;
+		IDirect3DTexture9 * ship = nullptr;
+		IDirect3DTexture9 * bullet = nullptr;
+		IDirect3DTexture9 * explosion = nullptr;
+		IDirect3DTexture9 * loot = nullptr;
 		map<char, IDirect3DTexture9 *> font;
 	};
 
 	struct AudioSet {
-		FSOUND_SAMPLE * fire;
-		FSOUND_SAMPLE * hit;
-		FSOUND_SAMPLE * shipHit;
-		FSOUND_SAMPLE * ready;
-		FSOUND_SAMPLE * dead;
-		FSOUND_SAMPLE * pickup;
+		FSOUND_SAMPLE * fire = nullptr;
+		FSOUND_SAMPLE * hit = nullptr;
+		FSOUND_SAMPLE * shipHit = nullptr;
+		FSOUND_SAMPLE * ready = nullptr;
+		FSOUND_SAMPLE * dead = nullptr;
+		FSOUND_SAMPLE * pickup = nullptr;
 		string music;
 	};
 

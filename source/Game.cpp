@@ -39,6 +39,9 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 	int invadersPerLine = 10;
 	int leftOffset = (maxX - (invaderSpreadX * (invadersPerLine - 1))) / 2;
 
+	sprites = spriteSet;
+	audio = audioSet;
+
 	for (int n = 0; n < ENEMIES_COUNT; ++n)
 	{
 		Invader &enemy = enemies[n];
@@ -48,19 +51,19 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 		enemy.y = enemies[n].startPosition.y;
 		enemy.size = 10 + ((n) % 17);
 		enemy.SetCollisionRadius(enemy.size);
+		enemy.SetupDrawProps(sprites.enemy, enemy.size);
 	}
 
 	ship = Ship(60, maxX - 60);
 	ship.x = maxX / 2;
 	ship.y = maxY - 50;
-	ship.SetCollisionRadius(40);
-
-	sprites = spriteSet;
-	audio = audioSet;
+	ship.SetCollisionRadius(40);	
+	ship.SetupDrawProps(sprites.ship, 50);
 
 	for (Bullet &bullet : bullets)
 	{
 		bullet.SetCollisionRadius(15);
+		bullet.SetupDrawProps(sprites.bullet, 15);
 		bullet.enabled = false;
 	}
 
@@ -308,7 +311,11 @@ void Game::ResetLoot()
 
 	for (int index : indices)
 	{
-		loot.emplace(index, Loot(lootValue, index));
+		Loot lootItem = Loot(lootValue, index);
+		lootItem.SetupDrawProps(sprites.loot, 15);
+		lootItem.SetCollisionRadius(15);
+
+		loot.emplace(index, lootItem);
 	}
 	
 }
@@ -356,11 +363,7 @@ void Game::AnimateEnemies()
 			enemy.x = enemy.startPosition.x + xo;
 			enemy.y = enemy.startPosition.y + yo;
 
-			if (sprites.enemy != nullptr)
-			{
-				DrawSprite(sprites.enemy, enemy.x, enemy.y, enemy.size, enemy.size, 0, 0xffffffff);
-			}
-			
+			enemy.Draw(elapsedTime);
 		}
 	}
 }
@@ -396,10 +399,7 @@ void Game::AnimateLoot(double timeDiff)
 
 		if (lootItem->y > maxY) lootItem->enabled = false;
 
-		if (sprites.loot != nullptr)
-		{
-			DrawSprite(sprites.loot, lootItem->x, lootItem->y, 15, 15, 0, 0xffffffff);
-		}
+		lootItem->Draw(elapsedTime);
 	}
 }
 
@@ -408,10 +408,7 @@ void Game::AnimateShip(double timeDiff)
 	int speed = timeDiff * 700;
 	ship.MoveHorizontally(IsKeyDown(VK_LEFT) ? -speed : IsKeyDown(VK_RIGHT) ? speed : 0);
 
-	if (sprites.ship != nullptr)
-	{
-		DrawSprite(sprites.ship, ship.x, ship.y, 50, 50, sin(elapsedTime * 10) * 0.1, 0xffffffff);
-	}	
+	ship.Draw(elapsedTime);
 }
 
 void Game::AnimateFiring(double timeDiff)
@@ -450,7 +447,7 @@ void Game::AnimateFiring(double timeDiff)
 
 			if (sprites.bullet != nullptr)
 			{
-				DrawSprite(sprites.bullet, bullets[n].x, bullets[n].y, 15, 15, bullets[n].rotation, 0xffffffff);
+				bullets[n].Draw(elapsedTime);
 			}
 		}		
 	}

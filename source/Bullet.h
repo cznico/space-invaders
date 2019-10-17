@@ -6,5 +6,7 @@ namespace SpaceInvaders {
 	{
 	public:
 		float rotation = 0;
+
+		void Draw(double animationTime) const override;
 	};
 }

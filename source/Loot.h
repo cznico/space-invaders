@@ -9,7 +9,7 @@ namespace SpaceInvaders
 		int value = 0;
 		int invaderIndex;
 
-		Loot(int value, int invaderIndex) : value(value), invaderIndex(invaderIndex) { enabled = false;  };
+		Loot(int value, int invaderIndex) : value(value), invaderIndex(invaderIndex) { enabled = false; };
 	};
 
 }
