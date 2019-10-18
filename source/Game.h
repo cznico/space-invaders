@@ -7,8 +7,6 @@
 #include "Leaderboard.h"
 #include "UserInterface.h"
 
-#include "../lib/leetlib.h"
-
 #include <map>
 #include <string>
 
@@ -29,6 +27,7 @@ namespace SpaceInvaders {
 		LEADERBOARD = 6,
 		INTRO = 7
 	};
+
 
 	class Game
 	{
@@ -76,6 +75,7 @@ namespace SpaceInvaders {
 			void AnimateFiring(double timeDiff);
 
 			void AnimateGame(double timeDiff);
+			void CleanDynamicStructures();
 
 			void ResetLoot();
 

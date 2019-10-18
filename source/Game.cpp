@@ -356,6 +356,7 @@ void Game::AnimateGame(double timeDiff)
 	AnimateExplosions();
 
 	ResolveInteractions();
+	CleanDynamicStructures();
 }
 
 void Game::AnimateEnemies()
@@ -405,11 +406,6 @@ void Game::AnimateExplosions()
 	for (auto &explosionIt : explosions)
 	{
 		explosionIt.second.Draw(gameTime);
-
-		if (!explosionIt.second.enabled)
-		{
-			explosions.erase(explosionIt.first);
-		}
 	}
 }
 
@@ -442,15 +438,33 @@ void Game::AnimateFiring(double timeDiff)
 	{
 		Bullet &bullet = bulletIt.second;
 
+		if (!bullet.enabled) continue;
+
 		bullet.y -= speed;
 		bullet.enabled = bullet.enabled && bullet.y > 0;
 		bullet.spin += timeDiff * 2;
 
 		bullet.Draw(gameTime);
+	}
+}
 
-		if (!bullet.enabled)
+void Game::CleanDynamicStructures()
+{
+	for (auto it = bullets.cbegin(), next_it = it; it != bullets.cend(); it = next_it)
+	{
+		++next_it;
+		if (!it->second.enabled)
 		{
-			bullets.erase(bulletIt.first);
+			bullets.erase(it);
+		}
+	}
+
+	for (auto it = explosions.cbegin(), next_it = it; it != explosions.cend(); it = next_it)
+	{
+		++next_it;
+		if (!it->second.enabled)
+		{
+			explosions.erase(it);
 		}
 	}
 }
