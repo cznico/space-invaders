@@ -10,7 +10,7 @@ void Bullet::Draw(double animationTime)
 {
 	if (sprite == nullptr) return;
 
-	DrawSprite(sprite, x, y, drawSize, drawSize, rotation, 0xffffffff);
+	DrawSprite(sprite, x, y, drawSize, drawSize, spin, 0xffffffff);
 }
 
 Bullet Bullet::CreateBullet(const Point &point)

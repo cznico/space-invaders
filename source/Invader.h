@@ -8,6 +8,7 @@ namespace SpaceInvaders {
 
 	public:
 		Point startPosition;
-		int size = 0;
+
+		float GetSize() const { return drawSize; };
 	};
 }

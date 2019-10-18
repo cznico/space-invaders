@@ -1,14 +1,12 @@
 #include "SpaceObject.h"
 
-#include "../lib/leetlib.h"
-
 using namespace SpaceInvaders;
 
 bool SpaceObject::IsColliding(const SpaceObject &another) const
 {
 	if (!enabled || !another.enabled) return false;
 	
-	// TODO optimize using bounding box
+	// Can be optimized using bounding box and quad trees in the future
 
 	return Distance(another) < collisionRadius + another.collisionRadius;
 }

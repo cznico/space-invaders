@@ -1,8 +1,7 @@
 #include "Game.h"
 
 #include <math.h>
-#include <iostream>
-#include "../lib/leetlib.h" // TODO remove dep
+#include "../lib/leetlib.h"
 #include "Leaderboard.h"
 
 #include <vector>
@@ -45,13 +44,15 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 	for (int n = 0; n < ENEMIES_COUNT; ++n)
 	{
 		Invader &enemy = enemies[n];
+		int size = 10 + ((n) % 17);
+
 		enemy.startPosition.x = (n % invadersPerLine) * invaderSpreadX + leftOffset;
 		enemy.x = enemies[n].startPosition.x;
 		enemy.startPosition.y = (n / invadersPerLine) * invaderSpreadY + 70;
 		enemy.y = enemies[n].startPosition.y;
-		enemy.size = 10 + ((n) % 17);
-		enemy.SetCollisionRadius(enemy.size);
-		enemy.SetupDrawProps(sprites.enemy, enemy.size);
+		
+		enemy.SetCollisionRadius(size);
+		enemy.SetupDrawProps(sprites.enemy, size);
 	}
 
 	ship = Ship(60, maxX - 60);
@@ -132,7 +133,7 @@ void Game::ResolveEnemyHits()
 				invader.enabled = false;
 
 				Explosion explosion = Explosion::CreateEffect(invader, gameTime);
-				explosion.SetupDrawProps(sprites.explosion, invader.size + 10);
+				explosion.SetupDrawProps(sprites.explosion, invader.GetSize() + 10);
 
 				explosions.emplace(n, explosion);
 
@@ -443,7 +444,7 @@ void Game::AnimateFiring(double timeDiff)
 
 		bullet.y -= speed;
 		bullet.enabled = bullet.enabled && bullet.y > 0;
-		bullet.rotation += timeDiff * 2;
+		bullet.spin += timeDiff * 2;
 
 		bullet.Draw(gameTime);
 

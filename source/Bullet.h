@@ -6,7 +6,7 @@ namespace SpaceInvaders {
 	{
 	public:
 		static int ShotsCount;
-		float rotation = 0;
+		float spin = 0;
 
 	public:
 		void Draw(double animationTime) override;
