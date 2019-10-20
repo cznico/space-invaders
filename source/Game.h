@@ -52,6 +52,9 @@ namespace SpaceInvaders {
 			int score = 0;
 			int lives = 3;
 			int level = 1;
+
+			bool muted = false;
+
 			GameState state;
 
 			SpriteSet sprites;
@@ -86,6 +89,7 @@ namespace SpaceInvaders {
 
 			void SetGameState(GameState newState);
 			void ResolveGameState();
+			void ResolveAudioState();
 
 			double UpdateTime(double time);
 			void ResetTime();

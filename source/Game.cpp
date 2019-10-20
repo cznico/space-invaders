@@ -50,7 +50,7 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 		enemy.x = enemies[n].startPosition.x;
 		enemy.startPosition.y = (n / invadersPerLine) * invaderSpreadY + 70;
 		enemy.y = enemies[n].startPosition.y;
-		
+
 		enemy.SetCollisionRadius(size);
 		enemy.SetupDrawProps(sprites.enemy, size);
 	}
@@ -58,7 +58,7 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 	ship = Ship(60, maxX - 60);
 	ship.x = maxX / 2;
 	ship.y = maxY - 60;
-	ship.SetCollisionRadius(40);	
+	ship.SetCollisionRadius(40);
 	ship.SetupDrawProps(sprites.ship, 40);
 
 	ui = UserInterface(maxX, maxY);
@@ -67,7 +67,10 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 	elapsedTime = 0;
 	SetGameState(GameState::INTRO);
 
-	PlayMusic(audio.music.c_str());
+	if (!muted)
+	{
+		PlayMusic(audio.music.c_str());
+	}	
 
 	leaderboard = highscores;
 
@@ -98,7 +101,7 @@ void Game::ResolvePlayerHit()
 		{
 			invader.enabled = false;
 			lives--;
-			if (audio.shipHit != nullptr)
+			if (audio.shipHit != nullptr && !muted)
 			{
 				PlaySnd(audio.shipHit, 1);
 			}
@@ -114,7 +117,7 @@ void Game::ResolvePlayerHit()
 			lootItem->enabled = false;
 			score += lootItem->value;
 
-			if (audio.pickup != nullptr)
+			if (audio.pickup != nullptr && !muted)
 			{
 				PlaySnd(audio.pickup, 0.5);
 			}
@@ -139,7 +142,7 @@ void Game::ResolveEnemyHits()
 
 				score += 10 + (level - 1) * 2; // Every level increases score points by 20%
 				
-				if (audio.hit != nullptr)
+				if (audio.hit != nullptr && !muted)
 				{
 					PlaySnd(audio.hit, 1);
 				}
@@ -184,7 +187,7 @@ void Game::ResolveUserInput(float timeDiff)
 		bullets.emplace(Bullet::ShotsCount++, bullet);
 		shotDelay = .25f; // 250ms rate of fire
 
-		if (audio.fire != nullptr)
+		if (audio.fire != nullptr && !muted)
 		{
 			PlaySnd(audio.fire, 0.5);
 		}
@@ -223,13 +226,13 @@ void Game::SetGameState(GameState newState)
 	case GameState::IN_GAME_PREPARE:
 		ResetTime();
 
-		if (audio.ready != nullptr)
+		if (audio.ready != nullptr && !muted)
 		{
 			PlaySnd(audio.ready, 0.7);
 		}		
 		break;
 	case GameState::DEAD:
-		if (audio.dead != nullptr)
+		if (audio.dead != nullptr && !muted)
 		{
 			PlaySnd(audio.dead, 0.7);
 		}
@@ -287,7 +290,7 @@ void Game::ResolveGameState()
 	if (state == GameState::DEAD && IsKeyHitSinceLastFlip(VK_RETURN))
 	{
 		ResetGame();
-		SetGameState(GameState::IN_GAME_PREPARE);
+		SetGameState(GameState::LEADERBOARD);
 		return;
 	}
 
@@ -324,6 +327,23 @@ void Game::ResolveGameState()
 	{
 		SetGameState(GameState::IN_GAME_PREPARE);
 		return;
+	}
+}
+
+void Game::ResolveAudioState()
+{
+	if (IsKeyHitSinceLastFlip('M'))
+	{
+		muted = !muted;
+
+		if (muted)
+		{
+			StopMusic();
+		}
+		else
+		{
+			PlayMusic(audio.music.c_str());
+		}
 	}
 }
 
@@ -502,6 +522,7 @@ void Game::Tick(double elapsedSeconds)
 	double timeDiff = UpdateTime(elapsedSeconds);
 
 	ResolveGameState();
+	ResolveAudioState();
 
 	switch (state)
 	{

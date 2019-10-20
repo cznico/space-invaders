@@ -44,29 +44,29 @@ void UserInterface::RenderIntroScreen() const
 	AnimateString("space invaders", titleTextOptions);
 
 	TextOptions youTextOptions;
-	youTextOptions.x = 250;
+	youTextOptions.x = 290;
 	youTextOptions.y = 150;
 	youTextOptions.scale = 0.5;
 
 	AnimateString("you are", youTextOptions);
 	if (sprites.ship != nullptr)
 	{
-		DrawSprite(sprites.ship, screenWidth - 200, 150, 40, 40, sin(animationTime * 10) * 0.1, 0xffffffff);
+		DrawSprite(sprites.ship, screenWidth - 240, 150, 40, 40, sin(animationTime * 10) * 0.1, 0xffffffff);
 	}
 
 	TextOptions shootTextOptions;
-	shootTextOptions.x = 250;
+	shootTextOptions.x = 290;
 	shootTextOptions.y = 250;
 	shootTextOptions.scale = 0.5;
 
 	AnimateString("shoot at", shootTextOptions);
 	if (sprites.enemy != nullptr)
 	{
-		DrawSprite(sprites.enemy, screenWidth - 200, 250 + sin(animationTime * 12) * 3, 30, 30, 0, 0xffffffff);
+		DrawSprite(sprites.enemy, screenWidth - 240, 250 + sin(animationTime * 12) * 3, 30, 30, 0, 0xffffffff);
 	}
 
 	TextOptions collectTextOptions;
-	collectTextOptions.x = 250;
+	collectTextOptions.x = 290;
 	collectTextOptions.y = 350;
 	collectTextOptions.scale = 0.5;
 
@@ -74,17 +74,26 @@ void UserInterface::RenderIntroScreen() const
 
 	if (sprites.loot != nullptr)
 	{
-		DrawSprite(sprites.loot, screenWidth - 200, 350 + sin(animationTime * 10) * 3, 20, 20, 0, 0xffffffff);
+		DrawSprite(sprites.loot, screenWidth - 240, 350 + sin(animationTime * 10) * 3, 20, 20, 0, 0xffffffff);
 	}
 
 	TextOptions pauseTextOptions;
 	pauseTextOptions.x = 250;
-	pauseTextOptions.y = 450;
+	pauseTextOptions.y = 420;
 	pauseTextOptions.scale = 0.5;
 
 	AnimateString("to pause press", pauseTextOptions);
 
-	DrawSprite(sprites.font.at('p'), screenWidth - 200, 450 + sin(animationTime * 8) * 3, 30, 30, 0, 0xffffffff);
+	DrawSprite(sprites.font.at('p'), screenWidth - 200, 420 + sin(animationTime * 8) * 3, 25, 25, 0, 0xffffffff);
+
+	TextOptions muteTextOptions;
+	muteTextOptions.x = 250;
+	muteTextOptions.y = 480;
+	muteTextOptions.scale = 0.5;
+
+	AnimateString("to mute press", muteTextOptions);
+
+	DrawSprite(sprites.font.at('m'), screenWidth - 200, 480 + sin(animationTime * 6) * 3, 25, 25, 0, 0xffffffff);
 
 	TextOptions ctaTextOptions;
 	ctaTextOptions.x = screenWidth / 2;
@@ -118,7 +127,7 @@ void UserInterface::RenderDeadScreen(int score) const
 	ctaTextOptions.alignment = TextAlignment::CENTER;
 	ctaTextOptions.scale = 0.5;
 
-	AnimateString("press enter to start again", ctaTextOptions);
+	AnimateString("press enter to continue", ctaTextOptions);
 }
 
 void UserInterface::RenderHighscoreScreen(const string &name) const
@@ -185,7 +194,7 @@ void UserInterface::RenderLeaderboardScreen(const Leaderboard &leaderboard) cons
 	ctaTextOptions.alignment = TextAlignment::CENTER;
 	ctaTextOptions.scale = 0.5;
 
-	AnimateString("press enter to continue", ctaTextOptions);
+	AnimateString("press enter to start again", ctaTextOptions);
 }
 
 void UserInterface::RenderPrepareOverlay(int level) const
