@@ -2,7 +2,7 @@
 
 using namespace SpaceInvaders;
 
-float Explosion::GetEffectPhase(double time)
+float Explosion::GetEffectPhase(double time) const
 {
 	if (startTime > time) return 0;
 

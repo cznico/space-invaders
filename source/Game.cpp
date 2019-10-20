@@ -13,9 +13,9 @@
 using namespace std;
 using namespace SpaceInvaders;
 
-vector<int> GetRandomVector(int maxNumber, int count)
+vector<unsigned int> GetRandomVector(unsigned int maxNumber, unsigned int count)
 {
-	vector<int> result;
+	vector<unsigned int> result;
 
 	for (int i = 0; i <= maxNumber; i++)
 	{
@@ -41,10 +41,10 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 	sprites = spriteSet;
 	audio = audioSet;
 
-	for (int n = 0; n < ENEMIES_COUNT; ++n)
+	for (unsigned int n = 0; n < ENEMIES_COUNT; ++n)
 	{
 		Invader &enemy = enemies[n];
-		int size = 10 + ((n) % 17);
+		unsigned int size = 10 + ((n) % 17);
 
 		enemy.startPosition.x = (n % invadersPerLine) * invaderSpreadX + leftOffset;
 		enemy.x = enemies[n].startPosition.x;
@@ -103,7 +103,7 @@ void Game::ResolvePlayerHit()
 			lives--;
 			if (audio.shipHit != nullptr && !muted)
 			{
-				PlaySnd(audio.shipHit, 1);
+				PlaySnd(audio.shipHit, 1.f);
 			}
 			
 		}
@@ -119,7 +119,7 @@ void Game::ResolvePlayerHit()
 
 			if (audio.pickup != nullptr && !muted)
 			{
-				PlaySnd(audio.pickup, 0.5);
+				PlaySnd(audio.pickup, 0.5f);
 			}
 		}
 	}
@@ -144,7 +144,7 @@ void Game::ResolveEnemyHits()
 				
 				if (audio.hit != nullptr && !muted)
 				{
-					PlaySnd(audio.hit, 1);
+					PlaySnd(audio.hit, 1.f);
 				}
 
 				// Do we need to enable loot drop
@@ -189,7 +189,7 @@ void Game::ResolveUserInput(float timeDiff)
 
 		if (audio.fire != nullptr && !muted)
 		{
-			PlaySnd(audio.fire, 0.5);
+			PlaySnd(audio.fire, 0.5f);
 		}
 	}
 
@@ -228,13 +228,13 @@ void Game::SetGameState(GameState newState)
 
 		if (audio.ready != nullptr && !muted)
 		{
-			PlaySnd(audio.ready, 0.7);
+			PlaySnd(audio.ready, 0.7f);
 		}		
 		break;
 	case GameState::DEAD:
 		if (audio.dead != nullptr && !muted)
 		{
-			PlaySnd(audio.dead, 0.7);
+			PlaySnd(audio.dead, 0.7f);
 		}
 		break;
 	}
@@ -351,10 +351,10 @@ void Game::ResetLoot()
 {
 	loot.clear();
 
-	int lootValue = 20 + (5 * level);
+	unsigned int lootValue = 20 + (5 * level);
 	auto indices = GetRandomVector(ENEMIES_COUNT - 1, 5);
 
-	for (int index : indices)
+	for (unsigned int index : indices)
 	{
 		Loot lootItem = Loot(lootValue, index);
 		lootItem.SetupDrawProps(sprites.loot, 15);
@@ -369,6 +369,7 @@ void Game::AnimateGame(double timeDiff)
 {
 	ResolveUserInput(timeDiff);
 
+	// Order matters - z-ordering in rendering
 	AnimateEnemies();	
 	AnimateFiring(timeDiff);
 	AnimateShip(timeDiff);
@@ -383,18 +384,19 @@ void Game::AnimateEnemies()
 {
 	int phase = gameTime * (100 + (level - 1) * 10); // Every level increases enemy speed by 10%
 
-	for (int n = 0; n < ENEMIES_COUNT; ++n)
+	for (unsigned int n = 0; n < ENEMIES_COUNT; ++n)
 	{
 		Invader &enemy = enemies[n];
 
 		if (enemy.enabled)
 		{
 			int xo = 0;
-			int yo = min((int)(phase / 1000) * 30, 200); // Descending behaviour
+			int yo = min((int)(phase / 1000) * 30, 200); // Descending behaviour - every 10s at level 1
 
+			// Start of Rotating behaviour
 			int n1 = phase + n * n + n * n * n;
 			
-			if (((n1 >> 6) & 0x7) == 0x7) // Rotating behaviour
+			if (((n1 >> 6) & 0x7) == 0x7) 
 			{
 				auto rotationRadius = 20 + ((n * n) % 9);
 				auto rotationPhase = (n1 & 0x7f) / 64.0f * 2.f * PI;
@@ -402,16 +404,20 @@ void Game::AnimateEnemies()
 				xo += (1 - cos(rotationPhase)) * rotationRadius;
 				yo += sin(rotationPhase) * rotationRadius;
 			}
+			// End of Rotating behaviour
 
+
+			// Start of Swooping behaviour
 			int n2 = phase + n + n * n + n * n * n * 3;
 
-			if (((n2 >> 8) & 0xf) == 0xf) // Swooping behaviour
+			if (((n2 >> 8) & 0xf) == 0xf)
 			{
 				auto swoopingDistance = 150 + ((n * n) % 9);
 				auto swoopingPhase = (n2 & 0xff) / 256.0f * 2.f * PI;
 
 				yo += (1 - cos(swoopingPhase)) * swoopingDistance;
 			}
+			// End of Swooping behaviour
 
 			enemy.x = enemy.startPosition.x + xo;
 			enemy.y = enemy.startPosition.y + yo;
@@ -453,7 +459,6 @@ void Game::AnimateFiring(double timeDiff)
 {
 	int speed = timeDiff * 400;
 
-	// Bullet animation
 	for (auto &bulletIt : bullets)
 	{
 		Bullet &bullet = bulletIt.second;
@@ -466,15 +471,6 @@ void Game::AnimateFiring(double timeDiff)
 
 		bullet.Draw(gameTime);
 	}
-}
-
-void Game::RenderBackground()
-{
-	if (sprites.background != nullptr)
-	{
-		DrawSprite(sprites.background, maxX/2, maxY/2, maxX/2, maxY/2, 0, 0xffffffff);
-	}
-	
 }
 
 void Game::CleanDynamicStructures()
@@ -522,7 +518,7 @@ void Game::Tick(double elapsedSeconds)
 	ResolveGameState();
 	ResolveAudioState();
 
-	RenderBackground();
+	ui.RenderBackground();
 
 	switch (state)
 	{
@@ -530,16 +526,19 @@ void Game::Tick(double elapsedSeconds)
 		ui.RenderIntroScreen();
 		break;
 	case GameState::PAUSED:
+		ui.RenderBackgroundLand();
 		AnimateGame(0);
 		ui.RenderGameOverlay(lives, score, level);
 		ui.RenderPausedOverlay();
 		break;
 	case GameState::IN_GAME_PREPARE:
+		ui.RenderBackgroundLand();
 		AnimateGame(timeDiff);
 		ui.RenderGameOverlay(lives, score, level);
 		ui.RenderPrepareOverlay(level);
 		break;
 	case GameState::IN_GAME:
+		ui.RenderBackgroundLand();
 		gameTime += timeDiff;
 		AnimateGame(timeDiff);
 		ui.RenderGameOverlay(lives, score, level);

@@ -14,6 +14,7 @@ namespace SpaceInvaders
 		IDirect3DTexture9 * sprite = nullptr;
 
 	public:
+		// If not enabled collisions are ignored for this object
 		bool enabled = true;
 	
 		void SetCollisionRadius(float newRadius) { collisionRadius = newRadius; };

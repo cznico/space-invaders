@@ -34,6 +34,23 @@ void UserInterface::AnimateString(string text, const TextOptions &options) const
 	}
 }
 
+void UserInterface::RenderBackground() const
+{
+	if (sprites.background != nullptr)
+	{
+		DrawSprite(sprites.background, screenWidth / 2, screenHeight / 2, screenWidth / 2, screenHeight / 2, 0, 0xffffffff);
+	}
+
+}
+
+void UserInterface::RenderBackgroundLand() const
+{
+	if (sprites.backgroundLand != nullptr)
+	{
+		DrawSprite(sprites.backgroundLand, screenWidth / 2, screenHeight - 11, screenWidth / 2, 11, 0, 0xffffffff);
+	}
+}
+
 void UserInterface::RenderIntroScreen() const
 {
 	TextOptions titleTextOptions;
@@ -104,7 +121,7 @@ void UserInterface::RenderIntroScreen() const
 	AnimateString("press enter to start", ctaTextOptions);
 }
 
-void UserInterface::RenderDeadScreen(int score) const
+void UserInterface::RenderDeadScreen(unsigned int score) const
 {
 	TextOptions deadTextOptions;
 	deadTextOptions.x = screenWidth / 2;
@@ -197,7 +214,7 @@ void UserInterface::RenderLeaderboardScreen(const Leaderboard &leaderboard) cons
 	AnimateString("press enter to start again", ctaTextOptions);
 }
 
-void UserInterface::RenderPrepareOverlay(int level) const
+void UserInterface::RenderPrepareOverlay(unsigned int level) const
 {
 	TextOptions levelTextOptions;
 	levelTextOptions.x = screenWidth / 2;
@@ -210,7 +227,7 @@ void UserInterface::RenderPrepareOverlay(int level) const
 	prepareTextOptions.x = screenWidth / 2;
 	prepareTextOptions.y = screenHeight / 2 + 25;
 	prepareTextOptions.alignment = TextAlignment::CENTER;
-	prepareTextOptions.scale = 1.2;
+	prepareTextOptions.scale = 1.2f;
 
 	AnimateString("get ready", prepareTextOptions);
 }
@@ -221,12 +238,12 @@ void UserInterface::RenderPausedOverlay() const
 	pauseTextOptions.x = screenWidth / 2;
 	pauseTextOptions.y = screenHeight / 2;
 	pauseTextOptions.alignment = TextAlignment::CENTER;
-	pauseTextOptions.scale = 1.2;
+	pauseTextOptions.scale = 1.2f;
 
 	AnimateString("pause", pauseTextOptions);
 }
 
-void UserInterface::RenderGameOverlay(int lives, int score, int level) const
+void UserInterface::RenderGameOverlay(unsigned int lives, unsigned int score, unsigned int level) const
 {
 	TextOptions headlineTextOptions;
 	headlineTextOptions.x = screenWidth / 2;
@@ -238,14 +255,14 @@ void UserInterface::RenderGameOverlay(int lives, int score, int level) const
 	TextOptions scoreTextOptions;
 	scoreTextOptions.x = 20;
 	scoreTextOptions.y = screenHeight - 40;
-	scoreTextOptions.scale = 0.5;
+	scoreTextOptions.scale = 0.5f;
 
 	AnimateString(to_string(score), scoreTextOptions);
 
 	TextOptions levelTextOptions;
 	levelTextOptions.x = 20;
 	levelTextOptions.y = screenHeight - 70;
-	levelTextOptions.scale = 0.5;
+	levelTextOptions.scale = 0.5f;
 
 	AnimateString("level " + to_string(level), levelTextOptions);
 
@@ -253,7 +270,7 @@ void UserInterface::RenderGameOverlay(int lives, int score, int level) const
 	livesTextOptions.x = screenWidth - 40;
 	livesTextOptions.y = screenHeight - 40;
 	livesTextOptions.alignment = TextAlignment::RIGHT;
-	livesTextOptions.scale = 0.75;
+	livesTextOptions.scale = 0.75f;
 
 	AnimateString(to_string(lives) + "x", livesTextOptions);
 
@@ -261,4 +278,5 @@ void UserInterface::RenderGameOverlay(int lives, int score, int level) const
 	{
 		DrawSprite(sprites.ship, screenWidth - 30, screenHeight - 40, 18, 18, sin(animationTime * 10)*0.1, 0xffffffff);
 	}
+
 }

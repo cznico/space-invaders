@@ -10,7 +10,7 @@ namespace SpaceInvaders {
 		float duration = 0.25f;
 
 	public:
-		float GetEffectPhase(double time);
+		float GetEffectPhase(double time) const;
 		void StartAnimation(double start, double durationToSet);
 		void Draw(double animationTime) override;
 		static Explosion CreateEffect(const Point &point, double startTime);

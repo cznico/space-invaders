@@ -6,10 +6,11 @@ namespace SpaceInvaders
 	class Loot : public SpaceObject
 	{
 	public:
+		// Value to add to score
 		int value = 0;
-		int invaderIndex;
+		unsigned int invaderIndex;
 
-		Loot(int value, int invaderIndex) : value(value), invaderIndex(invaderIndex) { enabled = false; };
+		Loot(int value, unsigned int invaderIndex) : value(value), invaderIndex(invaderIndex) { enabled = false; };
 	};
 
 }

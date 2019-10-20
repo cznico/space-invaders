@@ -23,7 +23,9 @@ SpriteSet LoadSpriteSet()
 	sprites.explosion = LoadSprite("gfx/explosion.png");
 	sprites.loot = LoadSprite("gfx/coin.png");
 	sprites.background = LoadSprite("gfx/background.png");
+	sprites.backgroundLand = LoadSprite("gfx/background_land.png");
 
+	// load alphabet
 	for (char i = 'a'; i <= 'z'; ++i) {
 		string fileName = "gfx/";
 		fileName = fileName + i;
@@ -31,6 +33,7 @@ SpriteSet LoadSpriteSet()
 		sprites.font.emplace(i, LoadSprite(fileName.c_str()));
 	}
 
+	// load numbers
 	for (char i = '0'; i <= '9'; ++i) {
 		string fileName = "gfx/num";
 		fileName = fileName + i;

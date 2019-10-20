@@ -13,7 +13,7 @@
 using namespace std;
 
 namespace SpaceInvaders {
-	const int ENEMIES_COUNT = 50;
+	const unsigned int ENEMIES_COUNT = 50;
 
 	class Leaderboard;
 
@@ -28,30 +28,29 @@ namespace SpaceInvaders {
 		INTRO = 7
 	};
 
-
 	class Game
 	{
 		protected:
-			int maxX = 0;
-			int maxY = 0;
+			unsigned int maxX = 0;
+			unsigned int maxY = 0;
 
 			UserInterface ui{0, 0};
 			
 			Invader enemies[ENEMIES_COUNT];
 			Ship ship{0,0};
 			
-			map<int, Bullet> bullets;
-			map<int, Loot> loot;
-			map<int, Explosion> explosions;
+			map<unsigned int, Bullet> bullets;
+			map<unsigned int, Loot> loot;
+			map<unsigned int, Explosion> explosions;
 
 			double startTime = 0;
 			double elapsedTime = 0;
 			double gameTime = 0;
 			double shotDelay = 0;
 
-			int score = 0;
-			int lives = 3;
-			int level = 1;
+			unsigned int score = 0;
+			unsigned int lives = 3;
+			unsigned int level = 1;
 
 			bool muted = false;
 
@@ -61,6 +60,7 @@ namespace SpaceInvaders {
 			AudioSet audio;
 			Leaderboard leaderboard;
 
+			// Player's name used when saving to leaderboard
 			string playerName;
 
 			void CaptureName();
@@ -76,8 +76,6 @@ namespace SpaceInvaders {
 			void AnimateLoot(double timeDiff);
 			void AnimateShip(double timeDiff);
 			void AnimateFiring(double timeDiff);
-
-			void RenderBackground();
 
 			void AnimateGame(double timeDiff);
 			void CleanDynamicStructures();
@@ -95,7 +93,7 @@ namespace SpaceInvaders {
 			void ResetTime();
 
 		public:
-			Game(int screenWidth, int screenHeight, double startTime) : maxX(screenWidth), maxY(screenHeight), startTime(startTime) {};
+			Game(unsigned int screenWidth, unsigned int screenHeight, double startTime) : maxX(screenWidth), maxY(screenHeight), startTime(startTime) {};
 
 			void Tick(double elapsedSeconds);
 			void Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, const Leaderboard &leaderboard);

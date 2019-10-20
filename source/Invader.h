@@ -7,6 +7,7 @@ namespace SpaceInvaders {
 	{
 
 	public:
+		// Base position of invader without animation offset
 		Point startPosition;
 
 		float GetSize() const { return drawSize; };
