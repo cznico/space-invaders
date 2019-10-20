@@ -367,8 +367,6 @@ void Game::ResetLoot()
 
 void Game::AnimateGame(double timeDiff)
 {
-	RenderBackground();
-
 	ResolveUserInput(timeDiff);
 
 	AnimateEnemies();	
@@ -523,6 +521,8 @@ void Game::Tick(double elapsedSeconds)
 
 	ResolveGameState();
 	ResolveAudioState();
+
+	RenderBackground();
 
 	switch (state)
 	{
