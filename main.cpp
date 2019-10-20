@@ -22,6 +22,7 @@ SpriteSet LoadSpriteSet()
 	sprites.bullet = LoadSprite("gfx/barrel.png");
 	sprites.explosion = LoadSprite("gfx/explosion.png");
 	sprites.loot = LoadSprite("gfx/coin.png");
+	sprites.background = LoadSprite("gfx/background.png");
 
 	for (char i = 'a'; i <= 'z'; ++i) {
 		string fileName = "gfx/";

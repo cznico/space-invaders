@@ -228,27 +228,28 @@ void UserInterface::RenderGameOverlay(int lives, int score, int level) const
 
 	TextOptions scoreTextOptions;
 	scoreTextOptions.x = 20;
-	scoreTextOptions.y = screenHeight - 20;
-	scoreTextOptions.scale = 0.75;
+	scoreTextOptions.y = screenHeight - 40;
+	scoreTextOptions.scale = 0.5;
 
 	AnimateString(to_string(score), scoreTextOptions);
 
 	TextOptions levelTextOptions;
 	levelTextOptions.x = 20;
-	levelTextOptions.y = screenHeight - 50;
+	levelTextOptions.y = screenHeight - 70;
 	levelTextOptions.scale = 0.5;
 
 	AnimateString("level " + to_string(level), levelTextOptions);
 
 	TextOptions livesTextOptions;
 	livesTextOptions.x = screenWidth - 40;
-	livesTextOptions.y = screenHeight - 20;
+	livesTextOptions.y = screenHeight - 40;
 	livesTextOptions.alignment = TextAlignment::RIGHT;
+	livesTextOptions.scale = 0.75;
 
 	AnimateString(to_string(lives) + "x", livesTextOptions);
 
 	if (sprites.ship != nullptr)
 	{
-		DrawSprite(sprites.ship, screenWidth - 30, screenHeight - 20, 20, 20, sin(animationTime * 10)*0.1, 0xffffffff);
+		DrawSprite(sprites.ship, screenWidth - 30, screenHeight - 40, 18, 18, sin(animationTime * 10)*0.1, 0xffffffff);
 	}
 }

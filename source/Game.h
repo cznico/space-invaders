@@ -74,6 +74,8 @@ namespace SpaceInvaders {
 			void AnimateShip(double timeDiff);
 			void AnimateFiring(double timeDiff);
 
+			void RenderBackground();
+
 			void AnimateGame(double timeDiff);
 			void CleanDynamicStructures();
 

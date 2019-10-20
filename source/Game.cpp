@@ -57,9 +57,9 @@ void Game::Initialize(const SpriteSet &spriteSet, const AudioSet &audioSet, cons
 
 	ship = Ship(60, maxX - 60);
 	ship.x = maxX / 2;
-	ship.y = maxY - 50;
+	ship.y = maxY - 60;
 	ship.SetCollisionRadius(40);	
-	ship.SetupDrawProps(sprites.ship, 50);
+	ship.SetupDrawProps(sprites.ship, 40);
 
 	ui = UserInterface(maxX, maxY);
 	ui.SetSpriteSet(spriteSet);
@@ -347,6 +347,8 @@ void Game::ResetLoot()
 
 void Game::AnimateGame(double timeDiff)
 {
+	RenderBackground();
+
 	ResolveUserInput(timeDiff);
 
 	AnimateEnemies();	
@@ -446,6 +448,15 @@ void Game::AnimateFiring(double timeDiff)
 
 		bullet.Draw(gameTime);
 	}
+}
+
+void Game::RenderBackground()
+{
+	if (sprites.background != nullptr)
+	{
+		DrawSprite(sprites.background, maxX/2, maxY/2, maxX/2, maxY/2, 0, 0xffffffff);
+	}
+	
 }
 
 void Game::CleanDynamicStructures()

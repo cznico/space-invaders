@@ -28,6 +28,7 @@ namespace SpaceInvaders
 		IDirect3DTexture9 * bullet = nullptr;
 		IDirect3DTexture9 * explosion = nullptr;
 		IDirect3DTexture9 * loot = nullptr;
+		IDirect3DTexture9 * background = nullptr;
 		map<char, IDirect3DTexture9 *> font;
 	};
 
