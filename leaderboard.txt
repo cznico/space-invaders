@@ -1,0 +1,10 @@
+34647;petr
+20000;sun wukong
+15000;king kong
+10000;donkey kong
+8000;dr zaius
+7000;mr teeny
+6000;spike
+5000;abu
+2500;albert in space
+1000;t nishikado
