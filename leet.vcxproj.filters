@@ -84,5 +84,12 @@
     <ClInclude Include="source\Explosion.h">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="leet.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="gfx\invader.ico" />
   </ItemGroup>
 </Project>

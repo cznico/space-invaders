@@ -14,6 +14,7 @@
     <ProjectGuid>{5917092B-72EA-42E6-8E41-FF366F3AB837}</ProjectGuid>
     <RootNamespace>leet</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -48,6 +49,7 @@
     <OutDir>Release\</OutDir>
     <IntDir>Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,6 +106,7 @@
     <ClCompile Include="source\UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="source\Explosion.h" />
     <ClInclude Include="source\Leaderboard.h" />
     <ClInclude Include="source\Invader.h" />
@@ -115,6 +118,12 @@
     <ClInclude Include="source\Bullet.h" />
     <ClInclude Include="source\SpaceObject.h" />
     <ClInclude Include="source\UserInterface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="leet.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="gfx\invader.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
